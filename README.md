@@ -37,7 +37,7 @@ Example config:
             "code": 200,
             "response": "OK",
             "response headers": {
-                "Set-Cookie": "JSESSIONID=F2D244A6B7AC4381F7B02B9AB5163829; HttpOnly"
+                "Set-Cookie": "JSESSIONID=ABCDE1234567890ABCDE1234567890; HttpOnly"
             }
         },
         {
