@@ -29,8 +29,8 @@ Example config:
             "path": {
                 "base": "/authentication/login",
                 "queries": {
-                    "username": "touk@touk.pl",
-                    "password": "abcd"
+                    "username": "user",
+                    "password": "pass1234"
                 }
             },
             "request": "",
@@ -56,7 +56,7 @@ Example config:
         {
             "method": "DELETE",
             "path": {
-                "urlPattern": "/selfCare/[0-9]+",
+                "urlPattern": "/books/[0-9]+",
                 "queries": {
                     "otp": ".*"
                 }
