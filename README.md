@@ -70,10 +70,11 @@ Example config:
 ```
 
 Complex example of starting MockServer on Android, where we want to have: 
--config in res/raw
--responses in assets
--files for download in external storage
-(Note that it is example, not suggested way of placing. Keeping all of configuration together have probably more sense):
+* config in res/raw
+* responses in assets
+* files for download in external storage
+
+(Note that it is example, not suggested way of placing config files. Keeping all of configuration together have probably more sense):
 
 ```java
 InputStream configInputStream = getResources().openRawResource(R.raw.config);
