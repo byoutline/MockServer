@@ -15,7 +15,7 @@ Example config:
 
 ```json
 {
-    "port": 8098, // port on which server will respond - full path will look like http://localhost:8098
+    "port": 8098,
     "requests": [
         {
             "method": "GET",
