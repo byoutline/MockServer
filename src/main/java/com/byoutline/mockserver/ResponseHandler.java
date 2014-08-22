@@ -138,7 +138,7 @@ public class ResponseHandler {
         if (isFile) {
             String filename = path.split("/")[2];
             if (filename != null && filename.length() > 0 && fileExists(filename)) {
-                return new ResponseParams(200, filename, "", Collections.EMPTY_MAP);
+                return new ResponseParams(filename, Collections.EMPTY_MAP);
             }
         }
 

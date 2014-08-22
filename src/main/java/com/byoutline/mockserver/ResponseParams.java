@@ -18,6 +18,10 @@ final class ResponseParams {
     final String params;
     final Map<String, String> headers;
 
+    public ResponseParams(@Nonnull String message, @Nonnull Map<String, String> headers) {
+        this(200, message, "", headers);
+    }
+    
     public ResponseParams(int responseCode, @Nonnull String message, @Nonnull String params, @Nonnull Map<String, String> headers) {
         this.responseCode = responseCode;
         this.message = message;
