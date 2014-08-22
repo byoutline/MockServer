@@ -19,7 +19,7 @@ final class ResponseParams {
     final Map<String, String> headers;
 
     public ResponseParams(@Nonnull String message, @Nonnull Map<String, String> headers) {
-        this(200, message, "", headers);
+        this(DefaultValues.RESPONSE_CODE, message, DefaultValues.PARAMS, headers);
     }
     
     public ResponseParams(int responseCode, @Nonnull String message, @Nonnull String params, @Nonnull Map<String, String> headers) {
@@ -77,5 +77,13 @@ final class ResponsePath {
             return true;
         }
         return string.isEmpty();
+    }
+}
+
+final class DefaultValues {
+    public static final int RESPONSE_CODE = 200;
+    public static final String PARAMS = "";
+
+    private DefaultValues() {
     }
 }
