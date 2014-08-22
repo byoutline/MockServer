@@ -44,7 +44,7 @@ class ConfigParser {
 
     private void parsePathConfig(JSONObject requestJsonObject) throws JSONException, IOException {
         ResponsePath path = getPathFromJson(requestJsonObject);
-        int responseCode = requestJsonObject.getInt(ConfigKeys.CODE);
+        int responseCode = getIntOrDef(requestJsonObject, ConfigKeys.CODE, DefaultValues.RESPONSE_CODE);
         final String message;
         if (requestJsonObject.has(ConfigKeys.RESPONSE_FILE)) {
             String responseFileName = requestJsonObject.getString(ConfigKeys.RESPONSE_FILE);
@@ -54,8 +54,16 @@ class ConfigParser {
             message = parseConfigResponse(requestJsonObject);
         }
         Map<String, String> headers = getResponseHeaders(requestJsonObject);
-        String params = requestJsonObject.getString(ConfigKeys.REQUEST);
+        String params = getStringOrDef(requestJsonObject, ConfigKeys.REQUEST, DefaultValues.PARAMS);
         addRequestAndResponse(path, params, responseCode, message, headers);
+    }
+
+    private int getIntOrDef(JSONObject json, String key, int defaultValue) throws JSONException {
+        return json.has(key) ? json.getInt(key) : defaultValue;
+    }
+    
+    private String getStringOrDef(JSONObject json, String key, String defaultValue) throws JSONException {
+        return json.has(key) ? json.getString(key) : defaultValue;
     }
 
     private Map<String, String> getResponseHeaders(JSONObject requestJsonObject) throws JSONException {
@@ -127,7 +135,7 @@ class ConfigParser {
         try {
             return requestJsonObject.getJSONObject(ConfigKeys.RESPONSE).toString();
         } catch (JSONException ex) {
-            return requestJsonObject.getString(ConfigKeys.RESPONSE);
+            return getStringOrDef(requestJsonObject, ConfigKeys.RESPONSE, DefaultValues.RESPONSE);
         }
     }
 

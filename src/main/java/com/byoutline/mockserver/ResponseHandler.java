@@ -148,7 +148,7 @@ public class ResponseHandler {
             }
         }
         LOGGER.warning("No response found...returning 404");
-        return new ResponseParams(404, "", "", Collections.EMPTY_MAP);
+        return new ResponseParams(404, "", DefaultValues.PARAMS, Collections.EMPTY_MAP);
     }
 
     private boolean fileExists(String fileName) {
