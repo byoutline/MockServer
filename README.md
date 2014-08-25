@@ -64,32 +64,6 @@ Example config:
 }
 ```
 
-Complex example of starting MockServer on Android, where we want to have: 
-* config in res/raw
-* responses in assets
-* files for download in external storage
+For typical use Android take a look at <a href="https://github.com/byoutline/AndroidStubServer">AndroidStubServer</a>.
 
-(Note that it is example, not suggested way of placing config files. Keeping all of configuration together have probably more sense):
-
-```java
-InputStream configInputStream = getResources().openRawResource(R.raw.config);
-ConfigReader fileReader = new ConfigReader() {
-
-    @Override
-    public InputStream getResponseConfigFromFileAsStream(String fileName) throws IOException {
-        return getAssets().open(fileName);
-    }
-
-    @Override
-    public String[] getResponseFolderFileNames() {
-        return Environment.getExternalStorageDirectory().list();
-    }
-
-    @Override
-    public File getResponseFile(String fileName) {
-        return new File(Environment.getExternalStorageDirectory(), fileName);
-    }
-};
-HttpMockServer.startMockApiServer(configInputStream, fileReader, NetworkType.VPN);
-```
 
