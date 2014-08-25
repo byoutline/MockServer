@@ -7,7 +7,7 @@ import java.io.InputStream;
  * Wraps platform specific bits.
  *
  * @see <a
- * href="https://github.com/byoutline/AndroidMockServer">AndroidMockServer
+ * href="https://github.com/byoutline/AndroidStubServer">AndroidMockServer
  * implementation</a>
  *
  * @author Sebastian Kacprzak <nait at naitbit.com>
@@ -20,22 +20,22 @@ public interface ConfigReader {
     InputStream getMainConfigFile();
 
     /**
-     * Provide input stream for file that contains response for single REST
-     * method.
+     * Provide input stream for file that contains response for single HTTP
+     * call.
      *
-     * @param relativeFilePath path of file that was in main config.
+     * @param fileName name of file that was in main config.
      * @throws java.io.IOException if there is no such a file and 404 should be
      * returned.
      */
-    InputStream getResponseConfigFromFile(String relativeFilePath) throws IOException;
+    InputStream getResponseConfigFromFile(String fileName) throws IOException;
 
     /**
-     * Provide a file with given name from folder with file responses(it
-     * probably won't be text file).
+     * Provide a static file that should be served for GET call.
+     * If no file should be returned return null or throw {@link IOException}
      *
-     * @param relativeFilePath path of file that was in main config.
+     * @param fileName name of file that was requested.
      * @throws java.io.IOException if there is no such a file and 404 should be
      * returned.
      */
-    InputStream getResponseFile(String relativeFilePath) throws IOException;
+    InputStream getStaticFile(String fileName) throws IOException;
 }

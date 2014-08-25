@@ -26,32 +26,31 @@ public class ResponseHandler {
     private final List<Map.Entry<ResponsePath, ResponseParams>> responses;
     private final Random random = new Random();
     private final NetworkType networkType;
-    private final ConfigReader fileReader;
+    private final ConfigReader configReader;
 
     public ResponseHandler(@Nonnull List<Map.Entry<ResponsePath, ResponseParams>> responses,
             @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
         this.responses = responses;
         this.networkType = networkType;
-        this.fileReader = fileReader;
+        this.configReader = fileReader;
     }
 
     public void handle(@Nonnull Request req, @Nonnull Response resp) {
         String path = req.getPath().getPath();
-        boolean isFile = path.startsWith("/files/");
-        ResponseParams rp = getResponseParms(req, path, isFile);
+        ResponseParams rp = getResponseParms(req, path);
 
         try {
-            setResponseFields(resp, isFile, rp);
+            setResponseFields(resp, rp);
             simulateNetworkLag();
-            streamResponse(resp, isFile, rp);
+            streamResponse(resp, rp);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "", e);
         }
     }
 
-    private void setResponseFields(Response resp, boolean isFile, ResponseParams rp) {
+    private void setResponseFields(Response resp, ResponseParams rp) {
         final long time = System.currentTimeMillis();
-        String contentType = getContentType(isFile, rp.message);
+        String contentType = getContentType(rp.staticFile, rp.message);
         resp.setContentType(contentType);
         resp.setValue("Server", "Mock");
         resp.setDate("Date", time);
@@ -62,16 +61,16 @@ public class ResponseHandler {
         }
     }
 
-    private void streamResponse(Response resp, boolean isFile, ResponseParams rp) throws IOException {
+    private void streamResponse(Response resp, ResponseParams rp) throws IOException {
         OutputStream body = null;
         try {
-            if (isFile) {
+            if (rp.staticFile) {
                 String fileName = rp.message;
 
                 body = resp.getOutputStream();
 
                 byte[] buffer = new byte[32 * 1024];
-                InputStream input = fileReader.getResponseFile(fileName);
+                InputStream input = configReader.getStaticFile(fileName);
                 int bytesRead;
                 while ((bytesRead = input.read(buffer, 0, buffer.length)) > 0) {
                     body.write(buffer, 0, bytesRead);
@@ -132,29 +131,26 @@ public class ResponseHandler {
 //        }
 //        return false;
 //    }
-    ResponseParams getResponseParms(Request req, String path, boolean isFile) {
-        if (isFile) {
-            String relativeFilePath = path.split("/")[2];
-            if (getInputStreamOrNull(relativeFilePath) != null) {
-                return new ResponseParams(relativeFilePath, Collections.EMPTY_MAP);
-            }
-        }
-
+    ResponseParams getResponseParms(Request req, String path) {
         for (Map.Entry<ResponsePath, ResponseParams> response : responses) {
             if (response.getKey().matches(req)) {
                 return response.getValue();
             }
         }
+        
+        if (getInputStreamOrNull(path) != null) {
+                return new ResponseParams(path, true, Collections.EMPTY_MAP);
+        }
         LOGGER.warning("No response found...returning 404");
-        return new ResponseParams(404, "", DefaultValues.PARAMS, Collections.EMPTY_MAP);
+        return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);
     }
 
-    private InputStream getInputStreamOrNull(String relativeFilePath) {
-        if (relativeFilePath == null || relativeFilePath.isEmpty()) {
+    private InputStream getInputStreamOrNull(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
             return null;
         }
         try {
-            return fileReader.getResponseFile(relativeFilePath);
+            return configReader.getStaticFile(fileName);
         } catch (IOException ex) {
             return null;
         }
