@@ -8,7 +8,7 @@ You can configure what response should mock server return for each path/method/q
 To use create a config file that contains on what calls server should respond in what way and start a server:
 
 ```java
-HttpMockServer.startMockApiServer(configInputStream, fileReader, NetworkType.VPN);
+HttpMockServer.startMockApiServer(configReader, NetworkType.VPN);
 ```
 
 Example config:
