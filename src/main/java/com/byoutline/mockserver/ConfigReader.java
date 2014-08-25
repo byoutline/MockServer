@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Wraps platform specyfic bits.
+ * Wraps platform specific bits.
  * For android implementation will look something like this:
  * <code class="java">
  * 
