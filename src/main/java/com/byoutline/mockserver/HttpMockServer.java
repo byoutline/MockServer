@@ -61,7 +61,9 @@ public class HttpMockServer implements Container {
         try {
             String configJson = new String(readInitialData(configInputStream));
             sMockServer = new HttpMockServer(new JSONObject(configJson), configReader, simulatedNetworkType);
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "MockServer error:", e);
+        } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "MockServer error:", e);
         }
     }
