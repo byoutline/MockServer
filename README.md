@@ -1,7 +1,7 @@
 MockServer
 ==========
 
-Simple REST server that makes simulating API easy.
+Simple Http server that makes simulating API easy.
 
 You can configure what response should mock server return for each path/method/queries combination (be it a json, or different file) and simulate network delay.
 
