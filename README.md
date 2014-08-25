@@ -20,8 +20,6 @@ Example config:
         {
             "method": "GET",
             "path": "/books",
-            "request": "",
-            "code": 200,
             "response file": "books.json"
         },
         {
@@ -33,7 +31,6 @@ Example config:
                     "password": "pass1234"
                 }
             },
-            "request": "",
             "code": 200,
             "response": "OK",
             "response headers": {
@@ -49,7 +46,6 @@ Example config:
                     "password": ".*"
                 }
             },
-            "request": "",
             "code": 401,
             "response": "Auth failed."
         },
@@ -61,7 +57,6 @@ Example config:
                     "otp": ".*"
                 }
             },
-            "request": "",
             "code": 204,
             "response": ""
         }
