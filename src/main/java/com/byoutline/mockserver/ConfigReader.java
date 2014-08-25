@@ -5,11 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Wraps platform specific bits.
- * For android implementation will look something like this:
- * <code class="java">
- * 
- * </code>
+ * Wraps platform specific bits. For android implementation take a look at
+ * AndroidMockServer implementation
+ * {@link https://github.com/byoutline/AndroidMockServer}
+ *
  * @author Sebastian Kacprzak <nait at naitbit.com>
  */
 public interface ConfigReader {
