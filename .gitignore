@@ -14,3 +14,28 @@ hs_err_pid*
 /build/
 /.gradle/
 /gradle.properties
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Eclipse project files
+.classpath
+.project
+
+# Android Studio
+.idea/
+/*/local.properties
+/*/out
+/*/*/build
+/*/build
+build/
+/*/*/production
+*.iml
+*.iws
+*.ipr
+*~
+*.swp
+
+# OS X
+*.DS_Store
+/app/mirror
