@@ -1,6 +1,5 @@
 package com.byoutline.mockserver;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,5 +37,5 @@ public interface ConfigReader {
      * @throws java.io.IOException if there is no such a file and 404 should be
      * returned.
      */
-    public File getResponseFile(String relativeFilePath) throws IOException;
+    InputStream getResponseFile(String relativeFilePath) throws IOException;
 }

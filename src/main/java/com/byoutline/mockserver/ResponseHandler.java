@@ -1,8 +1,7 @@
 package com.byoutline.mockserver;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
@@ -72,7 +71,7 @@ public class ResponseHandler {
                 body = resp.getOutputStream();
 
                 byte[] buffer = new byte[32 * 1024];
-                FileInputStream input = new FileInputStream(fileReader.getResponseFile(fileName));
+                InputStream input = fileReader.getResponseFile(fileName);
                 int bytesRead;
                 while ((bytesRead = input.read(buffer, 0, buffer.length)) > 0) {
                     body.write(buffer, 0, bytesRead);
@@ -136,7 +135,7 @@ public class ResponseHandler {
     ResponseParams getResponseParms(Request req, String path, boolean isFile) {
         if (isFile) {
             String relativeFilePath = path.split("/")[2];
-            if (getFileOrNull(relativeFilePath) != null) {
+            if (getInputStreamOrNull(relativeFilePath) != null) {
                 return new ResponseParams(relativeFilePath, Collections.EMPTY_MAP);
             }
         }
@@ -150,8 +149,8 @@ public class ResponseHandler {
         return new ResponseParams(404, "", DefaultValues.PARAMS, Collections.EMPTY_MAP);
     }
 
-    private File getFileOrNull(String relativeFilePath) {
-        if (relativeFilePath == null && relativeFilePath.isEmpty()) {
+    private InputStream getInputStreamOrNull(String relativeFilePath) {
+        if (relativeFilePath == null || relativeFilePath.isEmpty()) {
             return null;
         }
         try {
