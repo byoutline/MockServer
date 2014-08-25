@@ -1,10 +1,8 @@
 package com.byoutline.mockserver;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -49,17 +47,14 @@ public class HttpMockServer implements Container {
     }
 
     /**
-     *
-     * @param configInputStream stream of config file. <br />
-     * For android <code
-     * class="java">getResources().openRawResource(R.raw.config);</code>
+     * Starts mock server and keeps reference to it.
      * @param configReader wrapper for platform specific bits
      * @param simulatedNetworkType delay time before response is sent.
      */
-    public static void startMockApiServer(@Nonnull InputStream configInputStream,
-            @Nonnull ConfigReader configReader, @Nonnull NetworkType simulatedNetworkType) {
+    public static void startMockApiServer(@Nonnull ConfigReader configReader, 
+            @Nonnull NetworkType simulatedNetworkType) {
         try {
-            String configJson = new String(readInitialData(configInputStream));
+            String configJson = new String(readInitialData(configReader.getMainConfigFile()));
             sMockServer = new HttpMockServer(new JSONObject(configJson), configReader, simulatedNetworkType);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "MockServer error:", e);

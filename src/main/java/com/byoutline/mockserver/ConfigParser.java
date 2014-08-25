@@ -146,7 +146,7 @@ class ConfigParser {
     
     private String readResponseFile(String fileName) throws IOException {
         StringBuilder sb = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getResponseConfigFromFileAsStream(fileName), "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getResponseConfigFromFile(fileName), "UTF-8"));
 
         String mLine = reader.readLine();
         while (mLine != null) {

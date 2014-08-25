@@ -5,29 +5,38 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Wraps platform specific bits. For android implementation take a look at
- * AndroidMockServer implementation
- * {@link https://github.com/byoutline/AndroidMockServer}
+ * Wraps platform specific bits.
+ *
+ * @see <a
+ * href="https://github.com/byoutline/AndroidMockServer">AndroidMockServer
+ * implementation</a>
  *
  * @author Sebastian Kacprzak <nait at naitbit.com>
  */
 public interface ConfigReader {
 
     /**
-     * Provide input stream for file that contains response for single REST
-     * method.
+     * Provide input stream which includes port and custom responses.
      */
-    InputStream getResponseConfigFromFileAsStream(String fileName) throws IOException;
+    InputStream getMainConfigFile();
 
     /**
-     * Provide list of file names from folder where file responses(fe: images)
-     * are located.
+     * Provide input stream for file that contains response for single REST
+     * method.
+     *
+     * @param relativeFilePath path of file that was in main config.
+     * @throws java.io.IOException if there is no such a file and 404 should be
+     * returned.
      */
-    String[] getResponseFolderFileNames();
+    InputStream getResponseConfigFromFile(String relativeFilePath) throws IOException;
 
     /**
      * Provide a file with given name from folder with file responses(it
      * probably won't be text file).
+     *
+     * @param relativeFilePath path of file that was in main config.
+     * @throws java.io.IOException if there is no such a file and 404 should be
+     * returned.
      */
-    public File getResponseFile(String fileName);
+    public File getResponseFile(String relativeFilePath) throws IOException;
 }
