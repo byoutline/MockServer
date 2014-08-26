@@ -10,7 +10,7 @@ import java.io.InputStream;
  * href="https://github.com/byoutline/AndroidStubServer">AndroidMockServer
  * implementation</a>
  *
- * @author Sebastian Kacprzak <nait at naitbit.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
 public interface ConfigReader {
 

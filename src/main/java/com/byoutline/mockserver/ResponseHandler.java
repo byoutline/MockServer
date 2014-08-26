@@ -17,8 +17,8 @@ import org.simpleframework.http.Response;
 /**
  * Takes care of replying to requests.
  *
- * @author Sylwester Madej
- * @author Sebastian Kacprzak <nait at naitbit.com> on 14.04.14.
+ * @author Sylwester Madej <sylwester.madej at byoutline.com>
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
  */
 public class ResponseHandler {
 

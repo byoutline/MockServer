@@ -20,7 +20,7 @@ import org.json.JSONObject;
  * responses from assets.
  *
  * @author Sylwester Madej
- * @author Sebastian Kacprzak <nait at naitbit.com> on 14.04.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
  */
 class ConfigParser {
 

@@ -33,7 +33,7 @@ final class ResponseParams {
 }
 
 /**
- * @author Sebastian Kacprzak <nait at naitbit.com> on 15.04.14.
+ * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 15.04.14.
  */
 final class ResponsePath {
     final String method;
