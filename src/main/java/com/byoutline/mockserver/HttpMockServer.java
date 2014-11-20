@@ -22,8 +22,7 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
 /**
- * Local mock HTTP server. Configured with R.raw.config file. Based on
- * http://www.simpleframework.org/doc/tutorial/tutorial.php
+ * Local mock HTTP server.
  */
 public class HttpMockServer implements Container {
 
