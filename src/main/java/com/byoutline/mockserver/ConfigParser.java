@@ -33,7 +33,10 @@ class ConfigParser {
 
     public HttpMockServer.ConfigResult parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
         int port = configJson.optInt(ConfigKeys.PORT, HttpMockServer.MOCK_SERVER_PORT);
-        JSONArray jsonArrayOfRequests = configJson.getJSONArray(ConfigKeys.REQUESTS);
+        
+        JSONArray jsonArrayOfRequests = configJson.has(ConfigKeys.REQUESTS)
+                ? configJson.getJSONArray(ConfigKeys.REQUESTS)
+                : new JSONArray();
 
         for (int i = 0; i < jsonArrayOfRequests.length(); i++) {
             JSONObject requestJsonObject = jsonArrayOfRequests.getJSONObject(i);
