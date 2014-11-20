@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.simpleframework.http.Request;
@@ -48,14 +49,16 @@ public class HttpMockServer implements Container {
 
     /**
      * Starts mock server and keeps reference to it.
+     *
      * @param configReader wrapper for platform specific bits
      * @param simulatedNetworkType delay time before response is sent.
      */
-    public static void startMockApiServer(@Nonnull ConfigReader configReader, 
+    public static void startMockApiServer(@Nonnull ConfigReader configReader,
             @Nonnull NetworkType simulatedNetworkType) {
         try {
             String configJson = new String(readInitialData(configReader.getMainConfigFile()));
-            sMockServer = new HttpMockServer(new JSONObject(configJson), configReader, simulatedNetworkType);
+            JSONObject jsonObj = configJson.isEmpty() ? new JSONObject() : new JSONObject(configJson);
+            sMockServer = new HttpMockServer(jsonObj, configReader, simulatedNetworkType);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "MockServer error:", e);
         } catch (JSONException e) {
@@ -77,8 +80,11 @@ public class HttpMockServer implements Container {
         responseHandler.handle(req, resp);
     }
 
-    static byte[] readInitialData(@Nonnull InputStream inputStream)
+    static byte[] readInitialData(@Nullable InputStream inputStream)
             throws IOException {
+        if (inputStream == null) {
+            return new byte[0];
+        }
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
