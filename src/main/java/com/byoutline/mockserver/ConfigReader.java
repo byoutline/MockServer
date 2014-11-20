@@ -16,6 +16,8 @@ public interface ConfigReader {
 
     /**
      * Provide input stream which includes port and custom responses.
+     * If null is returned default port and no responses will be used.
+     * @return stream with json string or null
      */
     InputStream getMainConfigFile();
 
