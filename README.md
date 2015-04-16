@@ -11,6 +11,77 @@ To use create a config file that contains on what calls server should respond in
 HttpMockServer.startMockApiServer(configReader, NetworkType.VPN);
 ```
 
+## Config syntax
+Mock server is synchronized with single json file for simplicity. At top level you can specify:
+
+```
+{
+    "port" : 8000, // port at which server will be started
+    "requests" :
+    [
+        //array of objects representing requests with responses
+    ]
+}
+```
+
+Request are matched top to bottom until first match is found. This allow to make specific/general approach and test e.g. success/error responses.
+
+Each of request objects represents both request and response. Allowed fields:
+
+### Request part
+
+#### *method* (string) required! 
+HTTP method e.g. GET/PUT/POST/DELETE
+
+```
+{
+    "method":"GET"
+}
+```
+
+#### *path* (string/object) required! 
+Everything in url that stands after http://localhost:port e.g. /api/auth
+
+String version specifies only base path. Object version allows also to specify query params i.e. everything that goes after "?".
+
+Syntax for path object:
+
+```
+{
+    "base": "/authentication/login", //path that goes before "?"
+    "queries": //will be converted to ?username=user&password=pass1234 
+    {
+        "username": "user",
+        "password": "pass1234"
+    }
+}
+```
+
+#### *body* (string)
+Optional body of request, can be used to match POST/PUT calls by exact string match
+
+### Response part
+#### *code* (int)
+Html response code to be returned
+
+#### *response* (string/object)
+Response body to be returned. 
+
+#### *response file* (string) 
+Alternative to *response*, name of file that contains body to be returned as response. Should be stored in directory specified by *getResponseConfigFromFile()*.
+
+#### *response headers* (string)
+Allows to specify headers that should be returned in response.
+
+```
+{
+    "response headers":
+    {
+        "Set-Cookie": "JSESSIONID=ABCDE1234567890ABCDE1234567890; HttpOnly"
+    }
+}
+```
+
 Example config:
 
 ```json

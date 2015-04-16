@@ -25,14 +25,14 @@ import org.json.JSONObject;
 class ConfigParser {
 
     private final ConfigReader fileReader;
-    private final List<Map.Entry<ResponsePath, ResponseParams>> responses = new ArrayList<Map.Entry<ResponsePath, ResponseParams>>();
+    private final List<Map.Entry<RequestParams, ResponseParams>> responses = new ArrayList<Map.Entry<RequestParams, ResponseParams>>();
 
     ConfigParser(@Nonnull ConfigReader fileReader) {
         this.fileReader = fileReader;
     }
 
     public HttpMockServer.ConfigResult parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
-        int port = configJson.optInt(ConfigKeys.PORT, HttpMockServer.MOCK_SERVER_PORT);
+        int port = configJson.optInt(ConfigKeys.PORT, DefaultValues.MOCK_SERVER_PORT);
         
         JSONArray jsonArrayOfRequests = configJson.has(ConfigKeys.REQUESTS)
                 ? configJson.getJSONArray(ConfigKeys.REQUESTS)
@@ -46,7 +46,7 @@ class ConfigParser {
     }
 
     private void parsePathConfig(JSONObject requestJsonObject) throws JSONException, IOException {
-        ResponsePath path = getPathFromJson(requestJsonObject);
+        RequestParams path = getPathFromJson(requestJsonObject);
         int responseCode = getIntOrDef(requestJsonObject, ConfigKeys.CODE, DefaultValues.RESPONSE_CODE);
         final String message;
         if (requestJsonObject.has(ConfigKeys.RESPONSE_FILE)) {
@@ -86,28 +86,38 @@ class ConfigParser {
         }
     }
 
-    private ResponsePath getPathFromJson(JSONObject requestJsonObject) throws JSONException {
+    private RequestParams getPathFromJson(JSONObject requestJsonObject) throws JSONException {
         String method = requestJsonObject.getString(ConfigKeys.METHOD);
         String bodyMustContain = getBodyMustContain(requestJsonObject);
+        Map<String, String> headersMap = getRequestHeaders(requestJsonObject);
         try {
             JSONObject pathObject = requestJsonObject.getJSONObject(ConfigKeys.PATH);
             Map<String, String> queryMap = getPathQueries(pathObject);
+
             if (pathObject.has(ConfigKeys.PATH_BASE)) {
                 String basePath = pathObject.getString(ConfigKeys.PATH_BASE);
-                return new ResponsePath(method, basePath, false, bodyMustContain, queryMap);
+                return new RequestParams(method, basePath, false, bodyMustContain, queryMap, headersMap);
             } else {
                 String basePath = pathObject.getString(ConfigKeys.URL_PATTERN);
-                return new ResponsePath(method, basePath, true, bodyMustContain, queryMap);
+                return new RequestParams(method, basePath, true, bodyMustContain, queryMap, headersMap);
             }
         } catch (JSONException ex) {
             String basePath = requestJsonObject.getString(ConfigKeys.PATH);
-            return new ResponsePath(method, basePath, false, bodyMustContain, Collections.EMPTY_MAP);
+            return new RequestParams(method, basePath, false, bodyMustContain, Collections.emptyMap(), headersMap);
         }
+    }
+
+    private Map<String, String> getRequestHeaders(JSONObject requestJsonObject) {
+        if(!requestJsonObject.has(ConfigKeys.REQUEST_HEADERS)) {
+            return Collections.emptyMap();
+        }
+        JSONObject headers = requestJsonObject.getJSONObject(ConfigKeys.REQUEST_HEADERS);
+        return getStringStringMapFromJson(headers);
     }
 
     private Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
         if (!pathObject.has(ConfigKeys.PATH_QUERIES)) {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
         JSONObject queries = pathObject.getJSONObject(ConfigKeys.PATH_QUERIES);
         return getStringStringMapFromJson(queries);
@@ -142,9 +152,9 @@ class ConfigParser {
         }
     }
 
-    public void addRequestAndResponse(ResponsePath path, String params, int responseCode, String message, Map<String, String> headers) {
+    public void addRequestAndResponse(RequestParams path, String params, int responseCode, String message, Map<String, String> headers) {
         ResponseParams rp = new ResponseParams(responseCode, message, params, false, headers);
-        this.responses.add(new AbstractMap.SimpleImmutableEntry<ResponsePath, ResponseParams>(path, rp));
+        this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
     
     private String readResponseFile(String fileName) throws IOException {

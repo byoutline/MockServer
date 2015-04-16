@@ -23,12 +23,12 @@ import org.simpleframework.http.Response;
 public class ResponseHandler {
 
     private final static Logger LOGGER = Logger.getLogger(ResponseHandler.class.getName());
-    private final List<Map.Entry<ResponsePath, ResponseParams>> responses;
+    private final List<Map.Entry<RequestParams, ResponseParams>> responses;
     private final Random random = new Random();
     private final NetworkType networkType;
     private final ConfigReader configReader;
 
-    public ResponseHandler(@Nonnull List<Map.Entry<ResponsePath, ResponseParams>> responses,
+    public ResponseHandler(@Nonnull List<Map.Entry<RequestParams, ResponseParams>> responses,
             @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
         this.responses = responses;
         this.networkType = networkType;
@@ -37,7 +37,7 @@ public class ResponseHandler {
 
     public void handle(@Nonnull Request req, @Nonnull Response resp) {
         String path = req.getPath().getPath();
-        ResponseParams rp = getResponseParms(req, path);
+        ResponseParams rp = getResponseParams(req, path);
 
         try {
             setResponseFields(resp, rp);
@@ -122,17 +122,8 @@ public class ResponseHandler {
         responses.clear();
     }
 
-//    private boolean fileExists(String lookingForFile) {
-//
-//        for (String file : Environment.getExternalStorageDirectory().list()) {
-//            if (lookingForFile.equals(file)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-    ResponseParams getResponseParms(Request req, String path) {
-        for (Map.Entry<ResponsePath, ResponseParams> response : responses) {
+    ResponseParams getResponseParams(Request req, String path) {
+        for (Map.Entry<RequestParams, ResponseParams> response : responses) {
             if (response.getKey().matches(req)) {
                 return response.getValue();
             }

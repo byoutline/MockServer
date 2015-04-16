@@ -26,13 +26,11 @@ import org.simpleframework.transport.connect.SocketConnection;
  */
 public class HttpMockServer implements Container {
 
-    public static final int MOCK_SERVER_PORT = 8099;
-    public static final String SEPARATOR = "";
-    public static boolean DEBUG = true;
+    private final static Logger LOGGER = Logger.getLogger(HttpMockServer.class.getName());
 
+    public static boolean DEBUG = true;
     private final Connection conn;
     private final ResponseHandler responseHandler;
-    private final static Logger LOGGER = Logger.getLogger(HttpMockServer.class.getName());
 
     private static HttpMockServer sMockServer;
 
@@ -99,9 +97,9 @@ public class HttpMockServer implements Container {
     static final class ConfigResult {
 
         public final int port;
-        public final List<Map.Entry<ResponsePath, ResponseParams>> responses;
+        public final List<Map.Entry<RequestParams, ResponseParams>> responses;
 
-        ConfigResult(int port, List<Map.Entry<ResponsePath, ResponseParams>> responses) {
+        ConfigResult(int port, List<Map.Entry<RequestParams, ResponseParams>> responses) {
             this.port = port;
             this.responses = responses;
         }
