@@ -8,9 +8,6 @@ import org.simpleframework.http.Request;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * @author Sylwester Madej
- */
 final class ResponseParams {
 
     final int responseCode;
@@ -32,61 +29,3 @@ final class ResponseParams {
     }
 }
 
-/**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 15.04.14.
- */
-final class ResponsePath {
-    final String method;
-    final String basePath;
-    final boolean useRegexForPath;
-    final String bodyMustContain;
-    final Map<String, String> queries;
-
-    ResponsePath(@Nonnull String method,
-                 @Nonnull String basePath, @Nonnull boolean useRegexForPath,
-                 @Nullable String bodyMustContain,
-                 @Nonnull Map<String, String> queries) {
-        this.method = method;
-        this.basePath = basePath;
-        this.useRegexForPath = useRegexForPath;
-        this.bodyMustContain = bodyMustContain;
-        this.queries = queries;
-    }
-
-    public boolean matches(Request req) {
-        if (!method.equals(req.getMethod())) return false;
-        if (useRegexForPath) {
-            if (!req.getPath().getPath().matches(basePath)) return false;
-        } else {
-            if (!basePath.equals(req.getPath().getPath())) return false;
-        }
-        if (!queries.keySet().containsAll(req.getQuery().keySet())) return false;
-        try {
-            if (!isEmpty(bodyMustContain) && !req.getContent().contains(bodyMustContain))
-                return false;
-        } catch (IOException e) {
-            return false;
-        }
-        for (Map.Entry<String, String> reqQuery : req.getQuery().entrySet()) {
-            String respRegex = queries.get(reqQuery.getKey());
-            if (!reqQuery.getValue().matches(respRegex)) return false;
-        }
-        return true;
-    }
-    
-    private static boolean isEmpty(String string) {
-        if(string == null) {
-            return true;
-        }
-        return string.isEmpty();
-    }
-}
-
-final class DefaultValues {
-    public static final int RESPONSE_CODE = 200;
-    public static final String PARAMS = "";
-    public static final String RESPONSE = "OK";
-
-    private DefaultValues() {
-    }
-}
