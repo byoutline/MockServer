@@ -1,9 +1,9 @@
 MockServer
 ==========
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.byoutline.mockserver/mockserver/badge.svg?style=flat)](http://mvnrepository.com/artifact/com.byoutline.mockserver/mockserver)
-<!---[![Coverage Status](https://coveralls.io/repos/byoutline/MockServer/badge.svg?branch=master)](https://coveralls.io/r/byoutline/MockServer?branch=master) -->
  master:  [![Build Status](https://travis-ci.org/byoutline/MockServer.svg?branch=master)](https://travis-ci.org/byoutline/MockServer)
  develop: [![Build Status](https://travis-ci.org/byoutline/MockServer.svg?branch=develop)](https://travis-ci.org/byoutline/MockServer)
+ 
 
 Simple Http server that makes simulating API easy.
 
