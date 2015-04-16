@@ -30,8 +30,6 @@ public class ConfigParserTest {
         HttpMockServer.ConfigResult result = configParser.parseConfig(configJson);
 
         assertThat(result.port).isEqualTo(DefaultValues.MOCK_SERVER_PORT);
-
-
     }
 
     @Test
