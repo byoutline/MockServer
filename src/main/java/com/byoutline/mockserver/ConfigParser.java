@@ -103,7 +103,7 @@ class ConfigParser {
             }
         } catch (JSONException ex) {
             String basePath = requestJsonObject.getString(ConfigKeys.PATH);
-            return new RequestParams(method, basePath, false, bodyMustContain, Collections.emptyMap(), headersMap);
+            return new RequestParams(method, basePath, false, bodyMustContain, Collections.EMPTY_MAP, headersMap);
         }
     }
 

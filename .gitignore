@@ -15,7 +15,8 @@ hs_err_pid*
 /.nb-gradle/private/
 /build/
 /.gradle/
-/gradle.properties
+# Passwords
+/push.properties
 
 # Local configuration file (sdk path, etc)
 local.properties
