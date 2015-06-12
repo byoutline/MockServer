@@ -1,16 +1,5 @@
 package com.byoutline.mockserver;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.simpleframework.http.Request;
@@ -20,6 +9,18 @@ import org.simpleframework.http.core.ContainerServer;
 import org.simpleframework.transport.Server;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Local mock HTTP server.
@@ -50,17 +51,19 @@ public class HttpMockServer implements Container {
      * @param configReader wrapper for platform specific bits
      * @param simulatedNetworkType delay time before response is sent.
      */
-    public static void startMockApiServer(@Nonnull ConfigReader configReader,
+    public static HttpMockServer startMockApiServer(@Nonnull ConfigReader configReader,
             @Nonnull NetworkType simulatedNetworkType) {
         try {
             String configJson = new String(readInitialData(configReader.getMainConfigFile()));
             JSONObject jsonObj = configJson.isEmpty() ? new JSONObject() : new JSONObject(configJson);
             sMockServer = new HttpMockServer(jsonObj, configReader, simulatedNetworkType);
+            return sMockServer;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "MockServer error:", e);
         } catch (JSONException e) {
             LOGGER.log(Level.SEVERE, "MockServer error:", e);
         }
+        return null;
     }
 
     public void reset() {
