@@ -141,4 +141,6 @@ Example config:
 
 For typical use Android take a look at <a href="https://github.com/byoutline/AndroidStubServer">AndroidStubServer</a>.
 
-
+#### Latest Changes ####
+  * 1.4.0 If folder is requested and it contains index.html it will be returned instead of 404. 
+  ConfigReader requires now implementing isFolder method.
