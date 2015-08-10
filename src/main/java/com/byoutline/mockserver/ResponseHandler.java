@@ -30,7 +30,7 @@ public class ResponseHandler {
     private final ConfigReader configReader;
 
     public ResponseHandler(@Nonnull List<Map.Entry<RequestParams, ResponseParams>> responses,
-            @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
+                           @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
         this.responses = responses;
         this.networkType = networkType;
         this.configReader = fileReader;
@@ -131,9 +131,12 @@ public class ResponseHandler {
                 return response.getValue();
             }
         }
-        
+
+        if (configReader.isFolder(path)) {
+            path += "/index.html";
+        }
         if (getInputStreamOrNull(path) != null) {
-                return new ResponseParams(path, true, Collections.EMPTY_MAP);
+            return new ResponseParams(path, true, Collections.EMPTY_MAP);
         }
         LOGGER.warning("No response found...returning 404");
         return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);
