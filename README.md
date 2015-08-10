@@ -139,6 +139,7 @@ Example config:
 }
 ```
 
+#### Usage on Android ####
 For typical use Android take a look at <a href="https://github.com/byoutline/AndroidStubServer">AndroidStubServer</a>.
 
 #### Latest Changes ####
