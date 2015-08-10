@@ -1,5 +1,9 @@
 package com.byoutline.mockserver;
 
+import org.simpleframework.http.Request;
+import org.simpleframework.http.Response;
+
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,9 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
 
 /**
  * Takes care of replying to requests.
@@ -111,6 +112,8 @@ public class ResponseHandler {
                 return "audio/ogg";
             } else if (responseMsg.endsWith(".jpg")) {
                 return "image/jpeg";
+            } else if (responseMsg.endsWith(".html")) {
+                return "text/html";
             } else {
                 return "text/plain; charset=utf-8";
             }
