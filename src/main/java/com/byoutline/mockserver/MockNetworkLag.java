@@ -20,6 +20,9 @@ final class MockNetworkLag {
     void simulateNetworkLag() {
         try {
             long avg = (networkType.minDelay + networkType.maxDelay) / 2;
+            if (avg == 0) {
+                return;
+            }
             long spread = avg - networkType.minDelay;
             Thread.sleep(avg + random.nextLong() % spread);
         } catch (InterruptedException e) {
