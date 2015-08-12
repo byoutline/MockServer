@@ -38,7 +38,8 @@ public class HttpMockServer implements Container {
     public HttpMockServer(@Nonnull JSONObject jsonObject, @Nonnull ConfigReader configReader, @Nonnull NetworkType simulatedNetworkType)
             throws IOException, JSONException {
         ConfigResult config = new ConfigParser(configReader).parseConfig(jsonObject);
-        this.responseHandler = new ResponseHandler(config.responses, simulatedNetworkType, configReader);
+        MockNetworkLag networkLag = new MockNetworkLag(simulatedNetworkType);
+        this.responseHandler = new ResponseHandler(config.responses, networkLag, configReader);
         Server server = new ContainerServer(this);
         conn = new SocketConnection(server);
         final SocketAddress sa = new InetSocketAddress(config.port);
