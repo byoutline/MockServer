@@ -11,7 +11,6 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,14 +24,13 @@ public class ResponseHandler {
 
     private final static Logger LOGGER = Logger.getLogger(ResponseHandler.class.getName());
     private final List<Map.Entry<RequestParams, ResponseParams>> responses;
-    private final Random random = new Random();
-    private final NetworkType networkType;
+    private final MockNetworkLag mockNetworkLag;
     private final ConfigReader configReader;
 
     public ResponseHandler(@Nonnull List<Map.Entry<RequestParams, ResponseParams>> responses,
-                           @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
+                           @Nonnull MockNetworkLag mockNetworkLag, @Nonnull ConfigReader fileReader) {
         this.responses = responses;
-        this.networkType = networkType;
+        this.mockNetworkLag = mockNetworkLag;
         this.configReader = fileReader;
     }
 
@@ -42,7 +40,7 @@ public class ResponseHandler {
 
         try {
             setResponseFields(resp, rp);
-            simulateNetworkLag();
+            mockNetworkLag.simulateNetworkLag();
             streamResponse(resp, rp);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "", e);
@@ -91,16 +89,6 @@ public class ResponseHandler {
                     LOGGER.log(Level.SEVERE, "Exception on MockServer close", e);
                 }
             }
-        }
-    }
-
-    private void simulateNetworkLag() {
-        try {
-            long avg = (networkType.minDelay + networkType.maxDelay) / 2;
-            long spread = avg - networkType.minDelay;
-            Thread.sleep(avg + random.nextLong() % spread);
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.WARNING, "simulating network lag failed", e);
         }
     }
 
