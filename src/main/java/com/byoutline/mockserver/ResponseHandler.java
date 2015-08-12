@@ -1,5 +1,9 @@
 package com.byoutline.mockserver;
 
+import org.simpleframework.http.Request;
+import org.simpleframework.http.Response;
+
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,9 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import org.simpleframework.http.Request;
-import org.simpleframework.http.Response;
 
 /**
  * Takes care of replying to requests.
@@ -29,7 +30,7 @@ public class ResponseHandler {
     private final ConfigReader configReader;
 
     public ResponseHandler(@Nonnull List<Map.Entry<RequestParams, ResponseParams>> responses,
-            @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
+                           @Nonnull NetworkType networkType, @Nonnull ConfigReader fileReader) {
         this.responses = responses;
         this.networkType = networkType;
         this.configReader = fileReader;
@@ -111,6 +112,8 @@ public class ResponseHandler {
                 return "audio/ogg";
             } else if (responseMsg.endsWith(".jpg")) {
                 return "image/jpeg";
+            } else if (responseMsg.endsWith(".html")) {
+                return "text/html";
             } else {
                 return "text/plain; charset=utf-8";
             }
@@ -128,9 +131,12 @@ public class ResponseHandler {
                 return response.getValue();
             }
         }
-        
+
+        if (configReader.isFolder(path)) {
+            path += "/index.html";
+        }
         if (getInputStreamOrNull(path) != null) {
-                return new ResponseParams(path, true, Collections.EMPTY_MAP);
+            return new ResponseParams(path, true, Collections.EMPTY_MAP);
         }
         LOGGER.warning("No response found...returning 404");
         return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);

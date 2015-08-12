@@ -25,19 +25,26 @@ public interface ConfigReader {
      * Provide input stream for file that contains response for single HTTP
      * call.
      *
-     * @param fileName name of file that was in main config.
+     * @param relativePath relative path (usually only file name) of file that was in main config.
      * @throws java.io.IOException if there is no such a file and 404 should be
      * returned.
      */
-    InputStream getResponseConfigFromFile(String fileName) throws IOException;
+    InputStream getResponseConfigFromFile(String relativePath) throws IOException;
 
     /**
      * Provide a static file that should be served for GET call.
      * If no file should be returned return null or throw {@link IOException}
      *
-     * @param fileName name of file that was requested.
+     * @param relativePath relative path (usually only file name) of file that was requested.
      * @throws java.io.IOException if there is no such a file and 404 should be
      * returned.
      */
-    InputStream getStaticFile(String fileName) throws IOException;
+    InputStream getStaticFile(String relativePath) throws IOException;
+
+    /**
+     * Informs if given path points to a folder.
+     * @param relativePath relative path to check
+     * @return true if there is folder under pointed path, false otherwise.
+     */
+    boolean isFolder(String relativePath);
 }
