@@ -120,13 +120,14 @@ public class ResponseHandler {
             }
         }
 
-        if (configReader.isFolder(path)) {
-            path += "/index.html";
+        String adjustedPath = path;
+        if (configReader.isFolder(adjustedPath)) {
+            adjustedPath += "/index.html";
         }
-        if (getInputStreamOrNull(path) != null) {
-            return new ResponseParams(path, true, Collections.EMPTY_MAP);
+        if (getInputStreamOrNull(adjustedPath) != null) {
+            return new ResponseParams(adjustedPath, true, Collections.EMPTY_MAP);
         }
-        LOGGER.warning("No response found...returning 404");
+        LOGGER.info("No response found for " + path + " : returning 404");
         return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);
     }
 
