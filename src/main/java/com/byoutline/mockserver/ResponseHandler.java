@@ -127,7 +127,7 @@ public class ResponseHandler {
         if (getInputStreamOrNull(adjustedPath) != null) {
             return new ResponseParams(adjustedPath, true, Collections.EMPTY_MAP);
         }
-        LOGGER.info("No response found for " + path + " : returning 404");
+        LOGGER.warning("No response found for " + path + " : returning 404");
         return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);
     }
 
