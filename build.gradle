@@ -18,7 +18,7 @@ apply from: 'gradle/byoutline/javaLib.gradle'
 
 repositories {
     mavenCentral()
-    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+//    maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
