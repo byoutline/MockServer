@@ -49,8 +49,6 @@ class RequestParamsRegexMatchingSpec extends spock.lang.Specification {
         "POST" | current    | "cur"     | [:]                    | false
         "GET"  | current    | "current" | [:]                    | true
         "POST" | current    | "current" | [:]                    | false
-        "GET"  | current    | "current" | ['loginToken':'1e324'] | false
+        "GET"  | current    | "current" | ['loginToken':'1e324'] | true
     }
-
-
 }

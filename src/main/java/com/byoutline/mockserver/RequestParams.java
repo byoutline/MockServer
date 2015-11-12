@@ -40,7 +40,6 @@ final class RequestParams {
         if (!method.equals(req.getMethod())) return false;
         if (pathDoesNotMatch(req)) return false;
         if (bodyDoesNotMatch(req)) return false;
-        if (queriesDoesNotMatch(req)) return false;
         if (headersDoesNotMatch(req)) return false;
         return true;
     }
@@ -68,6 +67,7 @@ final class RequestParams {
             if (!req.getPath().getPath().matches(basePath)) return true;
         } else {
             if (!basePath.equals(req.getPath().getPath())) return true;
+            if (queriesDoesNotMatch(req)) return true;
         }
         return false;
     }
