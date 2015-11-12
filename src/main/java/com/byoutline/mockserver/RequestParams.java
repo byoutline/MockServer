@@ -38,30 +38,48 @@ final class RequestParams {
      */
     public boolean matches(Request req) {
         if (!method.equals(req.getMethod())) return false;
-        if (useRegexForPath) {
-            if (!req.getPath().getPath().matches(basePath)) return false;
-        } else {
-            if (!basePath.equals(req.getPath().getPath())) return false;
-        }
-        if (!queries.keySet().containsAll(req.getQuery().keySet())) return false;
-        if (!req.getNames().containsAll(headers.keySet())) return false;
+        if (pathDoesNotMatch(req)) return false;
+        if (bodyDoesNotMatch(req)) return false;
+        if (queriesDoesNotMatch(req)) return false;
+        if (headersDoesNotMatch(req)) return false;
+        return true;
+    }
 
-        try {
-            if (!isEmpty(bodyMustContain) && !req.getContent().contains(bodyMustContain))
-                return false;
-        } catch (IOException e) {
-            return false;
-        }
-
-        for (Map.Entry<String, String> reqQuery : req.getQuery().entrySet()) {
-            String respRegex = queries.get(reqQuery.getKey());
-            if (!reqQuery.getValue().matches(respRegex)) return false;
-        }
+    private boolean headersDoesNotMatch(Request req) {
+        if (!req.getNames().containsAll(headers.keySet())) return true;
         for(Map.Entry<String, String> header : headers.entrySet()) {
             String headerValueRegex = header.getValue();
-            if(!req.getValue(header.getKey()).matches(headerValueRegex)) return false;
+            if(!req.getValue(header.getKey()).matches(headerValueRegex)) return true;
         }
-        return true;
+        return false;
+    }
+
+    private boolean queriesDoesNotMatch(Request req) {
+        if (!queries.keySet().containsAll(req.getQuery().keySet())) return true;
+        for (Map.Entry<String, String> reqQuery : req.getQuery().entrySet()) {
+            String respRegex = queries.get(reqQuery.getKey());
+            if (!reqQuery.getValue().matches(respRegex)) return true;
+        }
+        return false;
+    }
+
+    private boolean pathDoesNotMatch(Request req) {
+        if (useRegexForPath) {
+            if (!req.getPath().getPath().matches(basePath)) return true;
+        } else {
+            if (!basePath.equals(req.getPath().getPath())) return true;
+        }
+        return false;
+    }
+
+    private boolean bodyDoesNotMatch(Request req) {
+        try {
+            if (!isEmpty(bodyMustContain) && !req.getContent().contains(bodyMustContain))
+                return true;
+        } catch (IOException e) {
+            return true;
+        }
+        return false;
     }
 
     //requires java 6, will not work on Android < 2.3
