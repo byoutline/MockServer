@@ -18,13 +18,11 @@ public class ConfigParserTest {
 
     @Before
     public void setUp() throws Exception {
-
         configParser = new ConfigParser(mock(ConfigReader.class));
     }
 
     @Test
     public void shouldSetDefaultPort() throws Exception {
-
         configJson = new JSONObject("{}");
 
         HttpMockServer.ConfigResult result = configParser.parseConfig(configJson);
@@ -84,10 +82,9 @@ public class ConfigParserTest {
         configJson = getConfigWithSingleRequest(request);
 
         //when
-
         HttpMockServer.ConfigResult result = configParser.parseConfig(configJson);
-        //then
 
+        //then
         Map<String, String> headers = result.responses.get(0).getKey().headers;
 
         assertThat(headers.get(name)).isEqualTo(value);

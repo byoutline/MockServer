@@ -51,7 +51,6 @@ public class RequestParamsTest {
 
         //then
         assertThat(requestParams.matches(request)).isFalse();
-
     }
 
     @Test
@@ -63,10 +62,8 @@ public class RequestParamsTest {
         when(query.keySet()).thenReturn(Collections.EMPTY_SET);
         when(path.getPath()).thenReturn(TestConstants.TEST_PATH);
 
-
         //then
         assertThat(requestParams.matches(request)).isTrue();
-
     }
 
     @Test
@@ -83,8 +80,6 @@ public class RequestParamsTest {
 
         //then
         assertThat(requestParams.matches(request)).isTrue();
-
-
     }
 
     @Test
@@ -103,14 +98,11 @@ public class RequestParamsTest {
 
         //then
         assertThat(requestParams.matches(request)).isFalse();
-
-
     }
 
     @Test
     public void shouldFailOnOneWrongValueOfHeader() throws Exception {
         //given
-
         headers.put(NAME, VALUE);
         RequestParams requestParams = new RequestParams(TestConstants.METHOD, TestConstants.TEST_PATH, false, null, Collections.EMPTY_MAP, headers);
 
@@ -122,7 +114,5 @@ public class RequestParamsTest {
 
         //then
         assertThat(requestParams.matches(request)).isFalse();
-
-
     }
 }
