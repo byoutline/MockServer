@@ -1,19 +1,14 @@
 package com.byoutline.mockserver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Nonnull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.annotation.Nonnull;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
 /**
  * Parses {@link com.byoutline.mockserver.HttpMockServer} config file and
@@ -33,7 +28,7 @@ class ConfigParser {
 
     public HttpMockServer.ConfigResult parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
         int port = configJson.optInt(ConfigKeys.PORT, DefaultValues.MOCK_SERVER_PORT);
-        
+
         JSONArray jsonArrayOfRequests = configJson.has(ConfigKeys.REQUESTS)
                 ? configJson.getJSONArray(ConfigKeys.REQUESTS)
                 : new JSONArray();
@@ -64,7 +59,7 @@ class ConfigParser {
     private int getIntOrDef(JSONObject json, String key, int defaultValue) throws JSONException {
         return json.has(key) ? json.getInt(key) : defaultValue;
     }
-    
+
     private String getStringOrDef(JSONObject json, String key, String defaultValue) throws JSONException {
         return json.has(key) ? json.getString(key) : defaultValue;
     }
@@ -86,7 +81,14 @@ class ConfigParser {
         }
     }
 
-    private RequestParams getPathFromJson(JSONObject requestJsonObject) throws JSONException {
+    /**
+     * Not private for testing. Converts {@link JSONObject} into {@link RequestParams}
+     *
+     * @param requestJsonObject json to be converted
+     * @return {@link RequestParams} with values from json
+     * @throws JSONException if object does not match {@link RequestParams} syntax
+     */
+    static RequestParams getPathFromJson(JSONObject requestJsonObject) throws JSONException {
         String method = requestJsonObject.getString(ConfigKeys.METHOD);
         String bodyMustContain = getBodyMustContain(requestJsonObject);
         Map<String, String> headersMap = getRequestHeaders(requestJsonObject);
@@ -107,15 +109,15 @@ class ConfigParser {
         }
     }
 
-    private Map<String, String> getRequestHeaders(JSONObject requestJsonObject) {
-        if(!requestJsonObject.has(ConfigKeys.REQUEST_HEADERS)) {
+    private static Map<String, String> getRequestHeaders(JSONObject requestJsonObject) {
+        if (!requestJsonObject.has(ConfigKeys.REQUEST_HEADERS)) {
             return Collections.emptyMap();
         }
         JSONObject headers = requestJsonObject.getJSONObject(ConfigKeys.REQUEST_HEADERS);
         return getStringStringMapFromJson(headers);
     }
 
-    private Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
+    private static Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
         if (!pathObject.has(ConfigKeys.PATH_QUERIES)) {
             return Collections.emptyMap();
         }
@@ -123,7 +125,7 @@ class ConfigParser {
         return getStringStringMapFromJson(queries);
     }
 
-    private String getBodyMustContain(JSONObject requestJsonObject) throws JSONException {
+    private static String getBodyMustContain(JSONObject requestJsonObject) throws JSONException {
         if (requestJsonObject.has(ConfigKeys.BODY_PATTERNS)) {
             JSONObject bodyPatterns = requestJsonObject.getJSONObject(ConfigKeys.BODY_PATTERNS);
             if (bodyPatterns.has(ConfigKeys.BODY_CONTAINS)) {
@@ -156,7 +158,7 @@ class ConfigParser {
         ResponseParams rp = new ResponseParams(responseCode, message, params, false, headers);
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
-    
+
     private String readResponseFile(String fileName) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getResponseConfigFromFile(fileName), "UTF-8"));
