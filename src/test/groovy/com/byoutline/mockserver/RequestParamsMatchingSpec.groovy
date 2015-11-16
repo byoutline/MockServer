@@ -104,9 +104,9 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
     Path path = Mock()
 
     @Unroll
-    def "should return #expResult for #method url: #url + with queries: #queries for json: #json"() {
+    def "should return #expResult for #method , #url , #queries for jsonConfig: #jsonConfig"() {
         given:
-        def jsonObj = new JSONObject(json)
+        def jsonObj = new JSONObject(jsonConfig)
         def params = ConfigParser.getPathFromJson(jsonObj)
 
         when:
@@ -122,59 +122,59 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
         result == expResult
 
         where:
-        method | json                | url    | queries             | expResult
-        "POST" | regexGet            | "/us"   | ''                  | false
-        "GET"  | regexGet            | "/us"   | ''                  | false
-        "GET"  | regexGet            | "/user" | ''                  | true
-        "POST" | regexGet            | "/user" | ''                  | false
-        "GET"  | regexGet            | "/user" | 'loginToken=1e324'  | true
-        "GET"  | regexGet            | "/user" | 'a=1&b2&c=3&d=4'    | true
-        "POST" | regexGet            | "/user" | 'loginToken=1e324'  | false
+        method | url     | queries             | jsonConfig  | expResult
+        "POST" | "/us"   | ''                  | regexGet    |  false
+        "GET"  | "/us"   | ''                  | regexGet    |  false
+        "GET"  | "/user" | ''                  | regexGet    |  true
+        "POST" | "/user" | ''                  | regexGet    |  false
+        "GET"  | "/user" | 'loginToken=1e324'  | regexGet    |  true
+        "GET"  | "/user" | 'a=1&b2&c=3&d=4'    | regexGet    |  true
+        "POST" | "/user" | 'loginToken=1e324'  | regexGet    |  false
 
-        "GET"  | get                 | "/us"   | ''                  | false
-        "GET"  | get                 | "/user" | ''                  | true
-        "GET"  | get                 | "/user" | 'a=1'               | true
+        "GET"  | "/us"   | ''                  | get                 |  false
+        "GET"  | "/user" | ''                  | get                 |  true
+        "GET"  | "/user" | 'a=1'               | get                 |  true
 
-        "POST" | post                | "/us"   | ''                  | false
-        "GET"  | post                | "/us"   | ''                  | false
-        "POST" | post                | "/user" | ''                  | true
-        "POST" | post                | "/user" | 'loginToken=1e324'  | true
+        "POST" | "/us"   | ''                  | post                |  false
+        "GET"  | "/us"   | ''                  | post                |  false
+        "POST" | "/user" | ''                  | post                |  true
+        "POST" | "/user" | 'loginToken=1e324'  | post                |  true
 
-        "PUT"  | putDefaultQuery     | "/user" | ''                  | false
-        "PUT"  | putDefaultQuery     | "/user" | 'loginToken=1e324'  | false
-        "PUT"  | putDefaultQuery     | "/user" | 'username=abc'      | false
-        "PUT"  | putDefaultQuery     | "/user" | 'user=user'         | false
-        "PUT"  | putDefaultQuery     | "/user" | 'username=user'     | true
-        "PUT"  | putDefaultQuery     | "/user" | 'username=user&a=1' | true
+        "PUT"  | "/user" | ''                  | putDefaultQuery     |  false
+        "PUT"  | "/user" | 'loginToken=1e324'  | putDefaultQuery     |  false
+        "PUT"  | "/user" | 'username=abc'      | putDefaultQuery     |  false
+        "PUT"  | "/user" | 'user=user'         | putDefaultQuery     |  false
+        "PUT"  | "/user" | 'username=user'     | putDefaultQuery     |  true
+        "PUT"  | "/user" | 'username=user&a=1' | putDefaultQuery     |  true
 
-        "PUT"  | putContainsQuery    | "/user" | ''                  | false
-        "PUT"  | putContainsQuery    | "/user" | 'loginToken=1e324'  | false
-        "PUT"  | putContainsQuery    | "/user" | 'username=abc'      | false
-        "PUT"  | putContainsQuery    | "/user" | 'user=user'         | false
-        "PUT"  | putContainsQuery    | "/user" | 'username=user'     | true
-        "PUT"  | putContainsQuery    | "/user" | 'username=user&a=1' | true
+        "PUT"  | "/user" | ''                  | putContainsQuery    |  false
+        "PUT"  | "/user" | 'loginToken=1e324'  | putContainsQuery    |  false
+        "PUT"  | "/user" | 'username=abc'      | putContainsQuery    |  false
+        "PUT"  | "/user" | 'user=user'         | putContainsQuery    |  false
+        "PUT"  | "/user" | 'username=user'     | putContainsQuery    |  true
+        "PUT"  | "/user" | 'username=user&a=1' | putContainsQuery    |  true
 
-        "PUT"  | putExactQuery       | "/user" | ''                  | false
-        "PUT"  | putExactQuery       | "/user" | 'loginToken=1e324'  | false
-        "PUT"  | putExactQuery       | "/user" | 'username=abc'      | false
-        "PUT"  | putExactQuery       | "/user" | 'user=user'         | false
-        "PUT"  | putExactQuery       | "/user" | 'username=user'     | true
-        "PUT"  | putExactQuery       | "/user" | 'username=user&a=1' | false
+        "PUT"  | "/user" | ''                  | putExactQuery       |  false
+        "PUT"  | "/user" | 'loginToken=1e324'  | putExactQuery       |  false
+        "PUT"  | "/user" | 'username=abc'      | putExactQuery       |  false
+        "PUT"  | "/user" | 'user=user'         | putExactQuery       |  false
+        "PUT"  | "/user" | 'username=user'     | putExactQuery       |  true
+        "PUT"  | "/user" | 'username=user&a=1' | putExactQuery       |  false
 
-        "PUT"  | putNotContainsQuery | "/user" | ''                  | true
-        "PUT"  | putNotContainsQuery | "/user" | 'loginToken=1e324'  | true
-        "PUT"  | putNotContainsQuery | "/user" | 'username=abc'      | true
-        "PUT"  | putNotContainsQuery | "/user" | 'user=user'         | true
-        "PUT"  | putNotContainsQuery | "/user" | 'username=user'     | false
-        "PUT"  | putNotContainsQuery | "/user" | 'username=user&a=1' | false
+        "PUT"  | "/user" | ''                  | putNotContainsQuery |  true
+        "PUT"  | "/user" | 'loginToken=1e324'  | putNotContainsQuery |  true
+        "PUT"  | "/user" | 'username=abc'      | putNotContainsQuery |  true
+        "PUT"  | "/user" | 'user=user'         | putNotContainsQuery |  true
+        "PUT"  | "/user" | 'username=user'     | putNotContainsQuery |  false
+        "PUT"  | "/user" | 'username=user&a=1' | putNotContainsQuery |  false
 
-        "PUT"  | putDefaultRegexQuery| "/user" | 'username=u'        | false
-        "PUT"  | putDefaultRegexQuery| "/user" | 'username=us'       | true
-        "PUT"  | putDefaultRegexQuery| "/user" | 'username=user'     | true
-        "PUT"  | putDefaultRegexQuery| "/user" | 'username=user&a=1' | true
+        "PUT"  | "/user" | 'username=u'        | putDefaultRegexQuery|  false
+        "PUT"  | "/user" | 'username=us'       | putDefaultRegexQuery|  true
+        "PUT"  | "/user" | 'username=user'     | putDefaultRegexQuery|  true
+        "PUT"  | "/user" | 'username=user&a=1' | putDefaultRegexQuery|  true
 
-        "PUT"  | putExactRegexQuery  | "/user" | 'username=u'        | false
-        "PUT"  | putExactRegexQuery  | "/user" | 'username=us'       | true
-        "PUT"  | putExactRegexQuery  | "/user" | 'username=user&a=1' | false
+        "PUT"  | "/user" | 'username=u'        | putExactRegexQuery  |  false
+        "PUT"  | "/user" | 'username=us'       | putExactRegexQuery  |  true
+        "PUT"  | "/user" | 'username=user&a=1' | putExactRegexQuery  |  false
     }
 }
