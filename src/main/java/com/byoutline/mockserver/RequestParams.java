@@ -63,10 +63,18 @@ final class RequestParams {
     }
 
     private boolean pathDoesNotMatch(Request req) {
+        String reqPath = req.getPath().getPath();
         if (useRegexForPath) {
-            if (!req.getPath().getPath().matches(basePath)) return true;
+            String fullReqPath;
+            String query = req.getQuery().toString();
+            if(query.isEmpty()) {
+                fullReqPath = reqPath;
+            } else {
+                fullReqPath = reqPath + "?" + query;
+            }
+            if (!fullReqPath.matches(basePath)) return true;
         } else {
-            if (!basePath.equals(req.getPath().getPath())) return true;
+            if (!basePath.equals(reqPath)) return true;
             if (queriesDoesNotMatch(req)) return true;
         }
         return false;

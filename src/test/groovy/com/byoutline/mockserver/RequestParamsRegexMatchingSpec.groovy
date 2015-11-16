@@ -2,8 +2,8 @@ package com.byoutline.mockserver
 
 import org.json.JSONObject
 import org.simpleframework.http.Path
-import org.simpleframework.http.Query
 import org.simpleframework.http.Request
+import org.simpleframework.http.parse.QueryParser
 import spock.lang.Shared
 import spock.lang.Unroll
 
@@ -12,7 +12,7 @@ import spock.lang.Unroll
  */
 class RequestParamsRegexMatchingSpec extends spock.lang.Specification {
     @Shared
-    def current = '''{
+    def jsonRegexCurrent = '''{
       "method": "GET",
       "path": {
         "urlPattern": "current.*"
@@ -22,10 +22,9 @@ class RequestParamsRegexMatchingSpec extends spock.lang.Specification {
     }'''
     Request request = Mock()
     Path path = Mock()
-    Query query = Mock()
 
     @Unroll
-    def "should match url: #url"() {
+    def "should match #method url: #url + with queries: #queries"() {
         given:
         def jsonObj = new JSONObject(json)
         def params = ConfigParser.getPathFromJson(jsonObj)
@@ -35,20 +34,20 @@ class RequestParamsRegexMatchingSpec extends spock.lang.Specification {
 
         then:
         path.getPath() >> url
-        query.keySet() >> queries.keySet()
-        query.entrySet() >> queries.entrySet()
         request.getMethod() >> method
         request.getPath() >> path
         request.getNames() >> Collections.emptyList()
-        request.getQuery() >> query
+        request.getQuery() >> new QueryParser(queries)
 
         result == expResult
 
         where:
-        method | json       | url       | queries                | expResult
-        "POST" | current    | "cur"     | [:]                    | false
-        "GET"  | current    | "current" | [:]                    | true
-        "POST" | current    | "current" | [:]                    | false
-        "GET"  | current    | "current" | ['loginToken':'1e324'] | true
+        method | json             | url       | queries            | expResult
+        "POST" | jsonRegexCurrent | "cur"     | ''                 | false
+        "GET"  | jsonRegexCurrent | "current" | ''                 | true
+        "POST" | jsonRegexCurrent | "current" | ''                 | false
+        "GET"  | jsonRegexCurrent | "current" | 'loginToken=1e324' | true
+        "GET"  | jsonRegexCurrent | "current" | 'a=1&b2&c=3&d=4'   | true
+        "POST" | jsonRegexCurrent | "current" | 'loginToken=1e324' | false
     }
 }
