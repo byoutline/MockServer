@@ -1,5 +1,6 @@
 package com.byoutline.mockserver;
 
+import com.byoutline.mockserver.internal.MatchingMethod;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +20,7 @@ import java.util.*;
  */
 class ConfigParser {
 
+    public static final MatchingMethod DEFAULT_QUERY_MATCHING_METHOD = MatchingMethod.CONTAINS;
     private final ConfigReader fileReader;
     private final List<Map.Entry<RequestParams, ResponseParams>> responses = new ArrayList<Map.Entry<RequestParams, ResponseParams>>();
 
@@ -69,7 +71,7 @@ class ConfigParser {
             JSONObject headers = requestJsonObject.getJSONObject(ConfigKeys.RESPONSE_HEADERS);
             return getStringStringMapFromJson(headers);
         } else {
-            return Collections.EMPTY_MAP;
+            return Collections.<String, String>emptyMap();
         }
     }
 
@@ -95,17 +97,21 @@ class ConfigParser {
         try {
             JSONObject pathObject = requestJsonObject.getJSONObject(ConfigKeys.PATH);
             Map<String, String> queryMap = getPathQueries(pathObject);
+            MatchingMethod queryMatchingMethod = getQueryMappingMethod(pathObject);
 
             if (pathObject.has(ConfigKeys.PATH_BASE)) {
                 String basePath = pathObject.getString(ConfigKeys.PATH_BASE);
-                return new RequestParams(method, basePath, false, bodyMustContain, queryMap, headersMap);
+                return new RequestParams(method, basePath, false, bodyMustContain,
+                        queryMap, queryMatchingMethod, headersMap);
             } else {
                 String basePath = pathObject.getString(ConfigKeys.URL_PATTERN);
-                return new RequestParams(method, basePath, true, bodyMustContain, queryMap, headersMap);
+                return new RequestParams(method, basePath, true, bodyMustContain,
+                        queryMap, queryMatchingMethod, headersMap);
             }
         } catch (JSONException ex) {
             String basePath = requestJsonObject.getString(ConfigKeys.PATH);
-            return new RequestParams(method, basePath, false, bodyMustContain, Collections.EMPTY_MAP, headersMap);
+            return new RequestParams(method, basePath, false, bodyMustContain,
+                    Collections.<String, String>emptyMap(), DEFAULT_QUERY_MATCHING_METHOD, headersMap);
         }
     }
 
@@ -123,6 +129,20 @@ class ConfigParser {
         }
         JSONObject queries = pathObject.getJSONObject(ConfigKeys.PATH_QUERIES);
         return getStringStringMapFromJson(queries);
+    }
+
+    private static MatchingMethod getQueryMappingMethod(JSONObject pathObject) {
+        if (!pathObject.has(ConfigKeys.PATH_QUERIES_MATCHING_METHOD)) {
+            // default value
+            return DEFAULT_QUERY_MATCHING_METHOD;
+        }
+        String matchingMethod = pathObject.getString(ConfigKeys.PATH_QUERIES_MATCHING_METHOD);
+        for (MatchingMethod queryMatchingMethod : MatchingMethod.values()) {
+            if(queryMatchingMethod.configValue.equals(matchingMethod)) {
+                return queryMatchingMethod;
+            }
+        }
+        throw new JSONException("Invalid " + ConfigKeys.PATH_QUERIES_MATCHING_METHOD + " value: " + matchingMethod);
     }
 
     private static String getBodyMustContain(JSONObject requestJsonObject) throws JSONException {

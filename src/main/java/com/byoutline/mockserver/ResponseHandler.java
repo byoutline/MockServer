@@ -125,10 +125,10 @@ public class ResponseHandler {
             adjustedPath += "/index.html";
         }
         if (getInputStreamOrNull(adjustedPath) != null) {
-            return new ResponseParams(adjustedPath, true, Collections.EMPTY_MAP);
+            return new ResponseParams(adjustedPath, true, Collections.<String, String>emptyMap());
         }
         LOGGER.warning("No response found for " + path + " : returning 404");
-        return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.EMPTY_MAP);
+        return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.<String, String>emptyMap());
     }
 
     private InputStream getInputStreamOrNull(String fileName) {
