@@ -1,6 +1,5 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
-import com.byoutline.mockserver.internal.MatchingMethod;
 import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 
@@ -12,7 +11,7 @@ import java.util.Map;
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 15.04.14.
  */
-final class RequestParams {
+public final class RequestParams {
     @Nonnull
     final String method;
     @Nonnull

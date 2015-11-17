@@ -1,4 +1,4 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
 /**
  * List of JSON keys that can be used in config file.

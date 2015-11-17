@@ -1,4 +1,4 @@
-package com.byoutline.mockserver
+package com.byoutline.mockserver.internal
 
 import org.json.JSONObject
 import org.simpleframework.http.Path

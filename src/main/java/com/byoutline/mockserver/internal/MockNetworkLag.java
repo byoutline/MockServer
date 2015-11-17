@@ -1,4 +1,6 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
+
+import com.byoutline.mockserver.NetworkType;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -7,12 +9,12 @@ import java.util.logging.Logger;
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-final class MockNetworkLag {
+public final class MockNetworkLag {
     private final static Logger LOGGER = Logger.getLogger(MockNetworkLag.class.getName());
     private final Random random = new Random();
     private final NetworkType networkType;
 
-    MockNetworkLag(NetworkType networkType) {
+    public MockNetworkLag(NetworkType networkType) {
         this.networkType = networkType;
     }
 

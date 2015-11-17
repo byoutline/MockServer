@@ -1,14 +1,11 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
+
+import com.byoutline.mockserver.DefaultValues;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.simpleframework.http.Request;
-
-import java.io.IOException;
 import java.util.Map;
 
-final class ResponseParams {
+public final class ResponseParams {
 
     final int responseCode;
     final String message;

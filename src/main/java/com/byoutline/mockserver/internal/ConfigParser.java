@@ -1,6 +1,7 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
-import com.byoutline.mockserver.internal.MatchingMethod;
+import com.byoutline.mockserver.ConfigReader;
+import com.byoutline.mockserver.DefaultValues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,17 +19,17 @@ import java.util.*;
  * @author Sylwester Madej
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
  */
-class ConfigParser {
+public class ConfigParser {
 
     public static final MatchingMethod DEFAULT_QUERY_MATCHING_METHOD = MatchingMethod.CONTAINS;
     private final ConfigReader fileReader;
     private final List<Map.Entry<RequestParams, ResponseParams>> responses = new ArrayList<Map.Entry<RequestParams, ResponseParams>>();
 
-    ConfigParser(@Nonnull ConfigReader fileReader) {
+    public ConfigParser(@Nonnull ConfigReader fileReader) {
         this.fileReader = fileReader;
     }
 
-    public HttpMockServer.ConfigResult parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
+    public ParsedConfig parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
         int port = configJson.optInt(ConfigKeys.PORT, DefaultValues.MOCK_SERVER_PORT);
 
         JSONArray jsonArrayOfRequests = configJson.has(ConfigKeys.REQUESTS)
@@ -39,7 +40,7 @@ class ConfigParser {
             JSONObject requestJsonObject = jsonArrayOfRequests.getJSONObject(i);
             parsePathConfig(requestJsonObject);
         }
-        return new HttpMockServer.ConfigResult(port, responses);
+        return new ParsedConfig(port, responses);
     }
 
     private void parsePathConfig(JSONObject requestJsonObject) throws JSONException, IOException {

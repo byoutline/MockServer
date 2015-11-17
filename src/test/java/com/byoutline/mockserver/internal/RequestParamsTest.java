@@ -1,6 +1,6 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
-import com.byoutline.mockserver.internal.MatchingMethod;
+import com.byoutline.mockserver.TestConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

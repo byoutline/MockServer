@@ -1,6 +1,7 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
 
+import com.byoutline.mockserver.NetworkType;
 import org.junit.Test;
 
 public class MockNetworkLagTest {

@@ -1,5 +1,9 @@
 package com.byoutline.mockserver;
 
+import com.byoutline.mockserver.internal.ConfigParser;
+import com.byoutline.mockserver.internal.MockNetworkLag;
+import com.byoutline.mockserver.internal.ParsedConfig;
+import com.byoutline.mockserver.internal.ResponseHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.simpleframework.http.Request;
@@ -17,8 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +39,7 @@ public class HttpMockServer implements Container {
 
     public HttpMockServer(@Nonnull JSONObject jsonObject, @Nonnull ConfigReader configReader, @Nonnull NetworkType simulatedNetworkType)
             throws IOException, JSONException {
-        ConfigResult config = new ConfigParser(configReader).parseConfig(jsonObject);
+        ParsedConfig config = new ConfigParser(configReader).parseConfig(jsonObject);
         MockNetworkLag networkLag = new MockNetworkLag(simulatedNetworkType);
         this.responseHandler = new ResponseHandler(config.responses, networkLag, configReader);
         Server server = new ContainerServer(this);
@@ -98,14 +100,4 @@ public class HttpMockServer implements Container {
         return byteArrayOutputStream.toByteArray();
     }
 
-    static final class ConfigResult {
-
-        public final int port;
-        public final List<Map.Entry<RequestParams, ResponseParams>> responses;
-
-        ConfigResult(int port, List<Map.Entry<RequestParams, ResponseParams>> responses) {
-            this.port = port;
-            this.responses = responses;
-        }
-    }
 }

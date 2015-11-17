@@ -1,6 +1,9 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
 
+import com.byoutline.mockserver.ConfigReader;
+import com.byoutline.mockserver.DefaultValues;
+import com.byoutline.mockserver.TestConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -25,7 +28,7 @@ public class ConfigParserTest {
     public void shouldSetDefaultPort() throws Exception {
         configJson = new JSONObject("{}");
 
-        HttpMockServer.ConfigResult result = configParser.parseConfig(configJson);
+        ParsedConfig result = configParser.parseConfig(configJson);
 
         assertThat(result.port).isEqualTo(DefaultValues.MOCK_SERVER_PORT);
     }
@@ -35,7 +38,7 @@ public class ConfigParserTest {
         int port = 8000;
         configJson = new JSONObject("{\"port\":" + port + "}");
 
-        HttpMockServer.ConfigResult configResult = configParser.parseConfig(configJson);
+        ParsedConfig configResult = configParser.parseConfig(configJson);
         assertThat(configResult.port).isEqualTo(port);
     }
 
@@ -47,7 +50,7 @@ public class ConfigParserTest {
         configJson = getConfigWithSingleRequest(request);
 
         //when
-        HttpMockServer.ConfigResult configResult = configParser.parseConfig(configJson);
+        ParsedConfig configResult = configParser.parseConfig(configJson);
 
         //then
         assertThat(configResult.responses.get(0).getKey().method).isEqualTo(TestConstants.METHOD);
@@ -62,7 +65,7 @@ public class ConfigParserTest {
         configJson = getConfigWithSingleRequest(request);
 
         //when
-        HttpMockServer.ConfigResult configResult = configParser.parseConfig(configJson);
+        ParsedConfig configResult = configParser.parseConfig(configJson);
 
         //then
         assertThat(configResult.responses.get(0).getKey().basePath).isEqualTo(TestConstants.TEST_PATH);
@@ -82,7 +85,7 @@ public class ConfigParserTest {
         configJson = getConfigWithSingleRequest(request);
 
         //when
-        HttpMockServer.ConfigResult result = configParser.parseConfig(configJson);
+        ParsedConfig result = configParser.parseConfig(configJson);
 
         //then
         Map<String, String> headers = result.responses.get(0).getKey().headers;

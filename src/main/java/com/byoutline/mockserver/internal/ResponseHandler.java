@@ -1,5 +1,7 @@
-package com.byoutline.mockserver;
+package com.byoutline.mockserver.internal;
 
+import com.byoutline.mockserver.ConfigReader;
+import com.byoutline.mockserver.DefaultValues;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 
