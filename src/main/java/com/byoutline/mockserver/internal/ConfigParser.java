@@ -21,7 +21,6 @@ import java.util.*;
  */
 public class ConfigParser {
 
-    public static final MatchingMethod DEFAULT_QUERY_MATCHING_METHOD = MatchingMethod.CONTAINS;
     private final ConfigReader fileReader;
     private final List<Map.Entry<RequestParams, ResponseParams>> responses = new ArrayList<Map.Entry<RequestParams, ResponseParams>>();
 
@@ -112,7 +111,7 @@ public class ConfigParser {
         } catch (JSONException ex) {
             String basePath = requestJsonObject.getString(ConfigKeys.PATH);
             return new RequestParams(method, basePath, false, bodyMustContain,
-                    Collections.<String, String>emptyMap(), DEFAULT_QUERY_MATCHING_METHOD, headersMap);
+                    Collections.<String, String>emptyMap(), DefaultValues.QUERY_MATCHING_METHOD, headersMap);
         }
     }
 
@@ -135,7 +134,7 @@ public class ConfigParser {
     private static MatchingMethod getQueryMappingMethod(JSONObject pathObject) {
         if (!pathObject.has(ConfigKeys.PATH_QUERIES_MATCHING_METHOD)) {
             // default value
-            return DEFAULT_QUERY_MATCHING_METHOD;
+            return DefaultValues.QUERY_MATCHING_METHOD;
         }
         String matchingMethod = pathObject.getString(ConfigKeys.PATH_QUERIES_MATCHING_METHOD);
         for (MatchingMethod queryMatchingMethod : MatchingMethod.values()) {
