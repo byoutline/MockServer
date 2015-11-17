@@ -16,7 +16,7 @@ public final class ResponseParams {
     public ResponseParams(@Nonnull String message, boolean staticFile, @Nonnull Map<String, String> headers) {
         this(DefaultValues.RESPONSE_CODE, message, DefaultValues.PARAMS, staticFile, headers);
     }
-    
+
     public ResponseParams(int responseCode, @Nonnull String message, @Nonnull String params, boolean staticFile, @Nonnull Map<String, String> headers) {
         this.responseCode = responseCode;
         this.message = message;

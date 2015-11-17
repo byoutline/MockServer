@@ -110,7 +110,7 @@ public class RequestParamsTest {
         //given
         headers.put(NAME, VALUE);
         RequestParams requestParams = new RequestParams(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
-                Collections.<String, String>emptyMap(),MatchingMethod.CONTAINS, headers);
+                Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, headers);
 
         //when
         when(request.getNames()).thenReturn(Collections.singletonList(NAME));

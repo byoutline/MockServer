@@ -138,7 +138,7 @@ public class ConfigParser {
         }
         String matchingMethod = pathObject.getString(ConfigKeys.PATH_QUERIES_MATCHING_METHOD);
         for (MatchingMethod queryMatchingMethod : MatchingMethod.values()) {
-            if(queryMatchingMethod.configValue.equals(matchingMethod)) {
+            if (queryMatchingMethod.configValue.equals(matchingMethod)) {
                 return queryMatchingMethod;
             }
         }

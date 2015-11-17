@@ -51,11 +51,11 @@ public class HttpMockServer implements Container {
     /**
      * Starts mock server and keeps reference to it.
      *
-     * @param configReader wrapper for platform specific bits
+     * @param configReader         wrapper for platform specific bits
      * @param simulatedNetworkType delay time before response is sent.
      */
     public static HttpMockServer startMockApiServer(@Nonnull ConfigReader configReader,
-            @Nonnull NetworkType simulatedNetworkType) {
+                                                    @Nonnull NetworkType simulatedNetworkType) {
         try {
             String configJson = new String(readInitialData(configReader.getMainConfigFile()));
             JSONObject jsonObj = configJson.isEmpty() ? new JSONObject() : new JSONObject(configJson);
