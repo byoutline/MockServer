@@ -15,4 +15,27 @@ class MockNetworkLagSpec extends Specification {
         then:
         notThrown Throwable
     }
+
+    def "should sleep more than minDelay"() {
+        given:
+        MockNetworkLag instance = new MockNetworkLag(NetworkType.UMTS);
+        def before = Calendar.instance.timeInMillis
+        when:
+        instance.simulateNetworkLag()
+        then:
+        def after = Calendar.instance.timeInMillis
+        after - before > NetworkType.UMTS.minDelay
+    }
+
+    def "should sleep less than maxDelay"() {
+        given:
+        MockNetworkLag instance = new MockNetworkLag(NetworkType.UMTS);
+        def before = Calendar.instance.timeInMillis
+        when:
+        instance.simulateNetworkLag()
+        then:
+        def after = Calendar.instance.timeInMillis
+        def methodExecutionMargin = 30
+        after - before < NetworkType.UMTS.maxDelay + methodExecutionMargin
+    }
 }
