@@ -15,10 +15,7 @@ import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.logging.Level;
@@ -57,8 +54,7 @@ public class HttpMockServer implements Container {
     public static HttpMockServer startMockApiServer(@Nonnull ConfigReader configReader,
                                                     @Nonnull NetworkType simulatedNetworkType) {
         try {
-            String configJson = new String(readInitialData(configReader.getMainConfigFile()));
-            JSONObject jsonObj = configJson.isEmpty() ? new JSONObject() : new JSONObject(configJson);
+            JSONObject jsonObj = ConfigParser.getMainConfigJson(configReader);
             sMockServer = new HttpMockServer(jsonObj, configReader, simulatedNetworkType);
             return sMockServer;
         } catch (IOException e) {
@@ -81,23 +77,6 @@ public class HttpMockServer implements Container {
     @Override
     public void handle(Request req, Response resp) {
         responseHandler.handle(req, resp);
-    }
-
-    static byte[] readInitialData(@Nullable InputStream inputStream)
-            throws IOException {
-        if (inputStream == null) {
-            return new byte[0];
-        }
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        int i = inputStream.read();
-        while (i != -1) {
-            byteArrayOutputStream.write(i);
-            i = inputStream.read();
-        }
-        inputStream.close();
-        return byteArrayOutputStream.toByteArray();
     }
 
 }

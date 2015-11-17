@@ -7,9 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import javax.annotation.Nullable;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -26,6 +25,28 @@ public class ConfigParser {
 
     public ConfigParser(@Nonnull ConfigReader fileReader) {
         this.fileReader = fileReader;
+    }
+
+    public static byte[] readInitialData(@Nullable InputStream inputStream)
+            throws IOException {
+        if (inputStream == null) {
+            return new byte[0];
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        int i = inputStream.read();
+        while (i != -1) {
+            byteArrayOutputStream.write(i);
+            i = inputStream.read();
+        }
+        inputStream.close();
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public static JSONObject getMainConfigJson(@Nonnull ConfigReader configReader) throws IOException {
+        String configJson = new String(readInitialData(configReader.getMainConfigFile()));
+        return configJson.isEmpty() ? new JSONObject() : new JSONObject(configJson);
     }
 
     public ParsedConfig parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
