@@ -174,7 +174,7 @@ public class ConfigParser {
         }
     }
 
-    public void addRequestAndResponse(RequestParams path, String params, int responseCode, String message, Map<String, String> headers) {
+    private void addRequestAndResponse(RequestParams path, String params, int responseCode, String message, Map<String, String> headers) {
         ResponseParams rp = new ResponseParams(responseCode, message, params, false, headers);
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
