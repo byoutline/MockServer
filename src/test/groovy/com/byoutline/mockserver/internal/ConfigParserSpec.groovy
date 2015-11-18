@@ -22,7 +22,15 @@ class ConfigParserSpec extends Specification {
     @Shared
     def headerVal = '1234'
     @Shared
-    def bodyContent = "body content"
+    def bodyContent = 'body content'
+
+    @Shared
+    def response = 'resp'
+    @Shared
+    def jsonResponse = '["json"]'
+    @Shared
+    def responseFilePath = '/responseFile.json'
+
     @Shared
     def simplePath = """{
             "requests": [
@@ -95,6 +103,46 @@ class ConfigParserSpec extends Specification {
                 }
             ]
         }"""
+    @Shared
+    def simpleResponse = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "response": "$response"
+                }
+            ]
+        }"""
+    @Shared
+    def responseCode = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "code": "213"
+                }
+            ]
+        }"""
+    @Shared
+    def responseHeaders = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "response headers": { "$headerKey": "$headerVal"  }
+                }
+            ]
+        }"""
+    @Shared
+    def responseFile = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "response file": "$responseFilePath"
+                }
+            ]
+        }"""
 
 
     def "should return empty config if config file is empty"() {
@@ -139,15 +187,35 @@ class ConfigParserSpec extends Specification {
         patternPath  | createRequest(true, '', [:], [:])
         defaultQuery | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
         exactQuery   | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
-        header       | createRequest(false, '', [:], [(headerKey):headerVal])
+        header       | createRequest(false, '', [:], [(headerKey): headerVal])
         body         | createRequest(false, bodyContent, [:], [:])
+    }
+
+    @Unroll
+    def "should read response: #expResponse from #config"() {
+        given:
+        def reader = new StringConfigReader(config, [(responseFilePath): jsonResponse])
+        when:
+        def json = ConfigParser.getMainConfigJson(reader)
+        def instance = new ConfigParser(reader)
+        def result = instance.parseConfig(json)
+        then:
+        result.responses.size() == 1
+        def requestParams = result.responses.get(0).value
+        requestParams == expResponse
+        where:
+        config          | expResponse
+        simpleResponse  | ResponseParams.create(response, false, [:])
+        responseCode    | ResponseParams.create(213, 'OK', false, [:])
+        responseHeaders | ResponseParams.create('OK', false, [(headerKey): headerVal])
+        responseFile    | ResponseParams.create(jsonResponse, false, [:])
     }
 
     def createRequest(boolean useRegexForPath,
                       String bodyMustContain,
                       Map<String, String> queries,
                       Map<String, String> headers) {
-        return createRequest(useRegexForPath, bodyMustContain, queries,  DefaultValues.QUERY_MATCHING_METHOD, headers)
+        return createRequest(useRegexForPath, bodyMustContain, queries, DefaultValues.QUERY_MATCHING_METHOD, headers)
     }
 
     def createRequest(boolean useRegexForPath,
