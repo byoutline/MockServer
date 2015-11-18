@@ -29,6 +29,9 @@ local.properties
 *.ipr
 *~
 *.swp
+# Annotation processing in main path so Android Studio see the sources
+/generated
+/generated_tests
 
 # OS X
 *.DS_Store
