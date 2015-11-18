@@ -91,7 +91,7 @@ class ConfigParserSpec extends Specification {
                 {
                     "method": "$method",
                     "path": "$path",
-                    "bodyPatterns": { "contains": "$bodyContent" }
+                    "bodyContains": "$bodyContent"
                 }
             ]
         }"""

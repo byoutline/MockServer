@@ -82,7 +82,7 @@ public class ConfigParser {
         return json.has(key) ? json.getInt(key) : defaultValue;
     }
 
-    private String getStringOrDef(JSONObject json, String key, String defaultValue) throws JSONException {
+    private static String getStringOrDef(JSONObject json, String key, String defaultValue) throws JSONException {
         return json.has(key) ? json.getString(key) : defaultValue;
     }
 
@@ -112,7 +112,7 @@ public class ConfigParser {
      */
     static RequestParams getPathFromJson(JSONObject requestJsonObject) throws JSONException {
         String method = requestJsonObject.getString(ConfigKeys.METHOD);
-        String bodyMustContain = getBodyMustContain(requestJsonObject);
+        String bodyMustContain = getStringOrDef(requestJsonObject, ConfigKeys.BODY_CONTAINS, "");
         Map<String, String> headersMap = getRequestHeaders(requestJsonObject);
         try {
             JSONObject pathObject = requestJsonObject.getJSONObject(ConfigKeys.PATH);
@@ -163,16 +163,6 @@ public class ConfigParser {
             }
         }
         throw new JSONException("Invalid " + ConfigKeys.PATH_QUERIES_MATCHING_METHOD + " value: " + matchingMethod);
-    }
-
-    private static String getBodyMustContain(JSONObject requestJsonObject) throws JSONException {
-        if (requestJsonObject.has(ConfigKeys.BODY_PATTERNS)) {
-            JSONObject bodyPatterns = requestJsonObject.getJSONObject(ConfigKeys.BODY_PATTERNS);
-            if (bodyPatterns.has(ConfigKeys.BODY_CONTAINS)) {
-                return bodyPatterns.getString(ConfigKeys.BODY_CONTAINS);
-            }
-        }
-        return "";
     }
 
     private static Map<String, String> getStringStringMapFromJson(JSONObject queries) throws JSONException {

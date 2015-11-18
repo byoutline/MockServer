@@ -18,7 +18,6 @@ public class ConfigKeys {
     public static final String RESPONSE_FILE = "response file";
     public static final String RESPONSE_HEADERS = "response headers";
     public static final String REQUESTS = "requests";
-    public static final String BODY_PATTERNS = "bodyPatterns";
-    public static final String BODY_CONTAINS = "contains";
+    public static final String BODY_CONTAINS = "bodyContains";
     public static final String REQUEST_HEADERS = "headers";
 }
