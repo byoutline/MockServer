@@ -75,8 +75,7 @@ public class ConfigParser {
             message = parseConfigResponse(requestJsonObject);
         }
         Map<String, String> headers = getResponseHeaders(requestJsonObject);
-        String params = getStringOrDef(requestJsonObject, ConfigKeys.REQUEST, DefaultValues.PARAMS);
-        addRequestAndResponse(path, params, responseCode, message, headers);
+        addRequestAndResponse(path, responseCode, message, headers);
     }
 
     private int getIntOrDef(JSONObject json, String key, int defaultValue) throws JSONException {
@@ -195,8 +194,8 @@ public class ConfigParser {
         }
     }
 
-    private void addRequestAndResponse(RequestParams path, String params, int responseCode, String message, Map<String, String> headers) {
-        ResponseParams rp = ResponseParams.create(responseCode, message, params, false, headers);
+    private void addRequestAndResponse(RequestParams path, int responseCode, String message, Map<String, String> headers) {
+        ResponseParams rp = ResponseParams.create(responseCode, message, false, headers);
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
 

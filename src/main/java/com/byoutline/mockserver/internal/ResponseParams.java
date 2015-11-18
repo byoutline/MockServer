@@ -10,19 +10,17 @@ import java.util.Map;
 public abstract class ResponseParams {
 
     public static ResponseParams create(@Nonnull String message, boolean staticFile, @Nonnull Map<String, String> headers) {
-        return new AutoValue_ResponseParams(DefaultValues.RESPONSE_CODE, message, DefaultValues.PARAMS, staticFile, headers);
+        return create(DefaultValues.RESPONSE_CODE, message, staticFile, headers);
     }
 
-    public static ResponseParams create(int responseCode, @Nonnull String message, @Nonnull String params, boolean staticFile, @Nonnull Map<String, String> headers) {
-        return new AutoValue_ResponseParams(responseCode, message, params, staticFile, headers);
+    public static ResponseParams create(int responseCode, @Nonnull String message, boolean staticFile, @Nonnull Map<String, String> headers) {
+        return new AutoValue_ResponseParams(responseCode, message, staticFile, headers);
     }
 
     public abstract int getResponseCode();
 
     @Nonnull
     public abstract String getMessage();
-
-    public abstract String getParams();
 
     public abstract boolean isStaticFile();
 

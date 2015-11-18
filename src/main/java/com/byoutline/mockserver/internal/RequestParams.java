@@ -16,10 +16,10 @@ import java.util.Map;
 public abstract class RequestParams {
 
     public static RequestParams create(@Nonnull String method,
-                  @Nonnull String basePath, boolean useRegexForPath,
-                  @Nullable String bodyMustContain,
-                  @Nonnull Map<String, String> queries, @Nonnull MatchingMethod queriesMatchingMethod,
-                  @Nonnull Map<String, String> headers) {
+                                       @Nonnull String basePath, boolean useRegexForPath,
+                                       @Nullable String bodyMustContain,
+                                       @Nonnull Map<String, String> queries, @Nonnull MatchingMethod queriesMatchingMethod,
+                                       @Nonnull Map<String, String> headers) {
         return new AutoValue_RequestParams(method,
                 basePath, useRegexForPath,
                 bodyMustContain,
@@ -28,7 +28,7 @@ public abstract class RequestParams {
     }
 
     @Nonnull
-    public abstract  String getMethod();
+    public abstract String getMethod();
 
     @Nonnull
     public abstract String getBasePath();
@@ -39,7 +39,7 @@ public abstract class RequestParams {
     public abstract String getBodyMustContain();
 
     @Nonnull
-    public abstract  Map<String, String> getQueries();
+    public abstract Map<String, String> getQueries();
 
     @Nonnull
     public abstract MatchingMethod getQueriesMatchingMethod();

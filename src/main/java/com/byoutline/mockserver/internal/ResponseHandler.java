@@ -1,7 +1,6 @@
 package com.byoutline.mockserver.internal;
 
 import com.byoutline.mockserver.ConfigReader;
-import com.byoutline.mockserver.DefaultValues;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 
@@ -130,7 +129,7 @@ public class ResponseHandler {
             return ResponseParams.create(adjustedPath, true, Collections.<String, String>emptyMap());
         }
         LOGGER.warning("No response found for " + path + " : returning 404");
-        return ResponseParams.create(404, "", DefaultValues.PARAMS, false, Collections.<String, String>emptyMap());
+        return ResponseParams.create(404, "", false, Collections.<String, String>emptyMap());
     }
 
     private InputStream getInputStreamOrNull(String fileName) {
