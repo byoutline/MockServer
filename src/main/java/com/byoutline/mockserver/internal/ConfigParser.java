@@ -122,16 +122,16 @@ public class ConfigParser {
 
             if (pathObject.has(ConfigKeys.PATH_BASE)) {
                 String basePath = pathObject.getString(ConfigKeys.PATH_BASE);
-                return new RequestParams(method, basePath, false, bodyMustContain,
+                return RequestParams.create(method, basePath, false, bodyMustContain,
                         queryMap, queryMatchingMethod, headersMap);
             } else {
                 String basePath = pathObject.getString(ConfigKeys.URL_PATTERN);
-                return new RequestParams(method, basePath, true, bodyMustContain,
+                return RequestParams.create(method, basePath, true, bodyMustContain,
                         queryMap, queryMatchingMethod, headersMap);
             }
         } catch (JSONException ex) {
             String basePath = requestJsonObject.getString(ConfigKeys.PATH);
-            return new RequestParams(method, basePath, false, bodyMustContain,
+            return RequestParams.create(method, basePath, false, bodyMustContain,
                     Collections.<String, String>emptyMap(), DefaultValues.QUERY_MATCHING_METHOD, headersMap);
         }
     }
@@ -196,7 +196,7 @@ public class ConfigParser {
     }
 
     private void addRequestAndResponse(RequestParams path, String params, int responseCode, String message, Map<String, String> headers) {
-        ResponseParams rp = new ResponseParams(responseCode, message, params, false, headers);
+        ResponseParams rp = ResponseParams.create(responseCode, message, params, false, headers);
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
 

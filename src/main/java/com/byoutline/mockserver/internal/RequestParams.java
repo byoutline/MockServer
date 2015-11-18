@@ -1,5 +1,6 @@
 package com.byoutline.mockserver.internal;
 
+import com.google.auto.value.AutoValue;
 import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 
@@ -11,34 +12,40 @@ import java.util.Map;
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 15.04.14.
  */
-public final class RequestParams {
-    @Nonnull
-    final String method;
-    @Nonnull
-    final String basePath;
-    final boolean useRegexForPath;
-    @Nullable
-    final String bodyMustContain;
-    @Nonnull
-    final Map<String, String> queries;
-    @Nonnull
-    final MatchingMethod queriesMatchingMethod;
-    @Nonnull
-    final Map<String, String> headers;
+@AutoValue
+public abstract class RequestParams {
 
-    RequestParams(@Nonnull String method,
+    public static RequestParams create(@Nonnull String method,
                   @Nonnull String basePath, boolean useRegexForPath,
                   @Nullable String bodyMustContain,
                   @Nonnull Map<String, String> queries, @Nonnull MatchingMethod queriesMatchingMethod,
                   @Nonnull Map<String, String> headers) {
-        this.method = method;
-        this.basePath = basePath;
-        this.useRegexForPath = useRegexForPath;
-        this.bodyMustContain = bodyMustContain;
-        this.queries = queries;
-        this.queriesMatchingMethod = queriesMatchingMethod;
-        this.headers = headers;
+        return new AutoValue_RequestParams(method,
+                basePath, useRegexForPath,
+                bodyMustContain,
+                queries, queriesMatchingMethod,
+                headers);
     }
+
+    @Nonnull
+    public abstract  String getMethod();
+
+    @Nonnull
+    public abstract String getBasePath();
+
+    public abstract boolean isUseRegexForPath();
+
+    @Nullable
+    public abstract String getBodyMustContain();
+
+    @Nonnull
+    public abstract  Map<String, String> getQueries();
+
+    @Nonnull
+    public abstract MatchingMethod getQueriesMatchingMethod();
+
+    @Nonnull
+    public abstract Map<String, String> getHeaders();
 
     /**
      * Checks if HTTP request matches all fields specified in config.
@@ -48,7 +55,7 @@ public final class RequestParams {
      * @return
      */
     public boolean matches(Request req) {
-        if (!method.equals(req.getMethod())) return false;
+        if (!getMethod().equals(req.getMethod())) return false;
         if (pathDoesNotMatch(req)) return false;
         if (bodyDoesNotMatch(req)) return false;
         if (headersDoesNotMatch(req)) return false;
@@ -56,8 +63,8 @@ public final class RequestParams {
     }
 
     private boolean headersDoesNotMatch(Request req) {
-        if (!req.getNames().containsAll(headers.keySet())) return true;
-        for (Map.Entry<String, String> header : headers.entrySet()) {
+        if (!req.getNames().containsAll(getHeaders().keySet())) return true;
+        for (Map.Entry<String, String> header : getHeaders().entrySet()) {
             String headerValueRegex = header.getValue();
             if (!req.getValue(header.getKey()).matches(headerValueRegex)) return true;
         }
@@ -66,7 +73,7 @@ public final class RequestParams {
 
     private boolean queriesDoesNotMatch(Request req) {
         Query query = req.getQuery();
-        switch (queriesMatchingMethod) {
+        switch (getQueriesMatchingMethod()) {
             case EXACT:
                 return !queriesMatchExactly(query);
             case CONTAINS:
@@ -75,19 +82,19 @@ public final class RequestParams {
                 return !queriesDoesNotContain(query);
             default:
                 throw new AssertionError("Unknown " + ConfigKeys.PATH_QUERIES_MATCHING_METHOD +
-                        ": " + queriesMatchingMethod);
+                        ": " + getQueriesMatchingMethod());
         }
     }
 
     private boolean queriesMatchExactly(Query reqQueries) {
-        if (queries.size() != reqQueries.size()) {
+        if (getQueries().size() != reqQueries.size()) {
             return false;
         }
         return queriesContainsAll(reqQueries);
     }
 
     private boolean queriesContainsAll(Query reqQueries) {
-        for (Map.Entry<String, String> query : queries.entrySet()) {
+        for (Map.Entry<String, String> query : getQueries().entrySet()) {
             String reqValue = reqQueries.get(query.getKey());
             if (reqValue == null) {
                 return false;
@@ -99,7 +106,7 @@ public final class RequestParams {
     }
 
     private boolean queriesDoesNotContain(Query reqQueries) {
-        for (Map.Entry<String, String> query : queries.entrySet()) {
+        for (Map.Entry<String, String> query : getQueries().entrySet()) {
             String reqValue = reqQueries.get(query.getKey());
             if (reqValue == null) {
                 continue;
@@ -112,7 +119,7 @@ public final class RequestParams {
 
     private boolean pathDoesNotMatch(Request req) {
         String reqPath = req.getPath().getPath();
-        if (useRegexForPath) {
+        if (isUseRegexForPath()) {
             String fullReqPath;
             String query = req.getQuery().toString();
             if (query.isEmpty()) {
@@ -120,9 +127,9 @@ public final class RequestParams {
             } else {
                 fullReqPath = reqPath + "?" + query;
             }
-            if (!fullReqPath.matches(basePath)) return true;
+            if (!fullReqPath.matches(getBasePath())) return true;
         } else {
-            if (!basePath.equals(reqPath)) return true;
+            if (!getBasePath().equals(reqPath)) return true;
             if (queriesDoesNotMatch(req)) return true;
         }
         return false;
@@ -130,7 +137,7 @@ public final class RequestParams {
 
     private boolean bodyDoesNotMatch(Request req) {
         try {
-            if (!isEmpty(bodyMustContain) && !req.getContent().contains(bodyMustContain))
+            if (!isEmpty(getBodyMustContain()) && !req.getContent().contains(getBodyMustContain()))
                 return true;
         } catch (IOException e) {
             return true;

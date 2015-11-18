@@ -51,13 +51,13 @@ public class ResponseHandler {
 
     private void setResponseFields(Response resp, ResponseParams rp) {
         final long time = System.currentTimeMillis();
-        String contentType = getContentType(rp.staticFile, rp.message);
+        String contentType = getContentType(rp.isStaticFile(), rp.getMessage());
         resp.setContentType(contentType);
         resp.setValue("Server", "Mock");
         resp.setDate("Date", time);
         resp.setDate("Last-Modified", time);
-        resp.setCode(rp.responseCode);
-        for (Map.Entry<String, String> header : rp.headers.entrySet()) {
+        resp.setCode(rp.getResponseCode());
+        for (Map.Entry<String, String> header : rp.getHeaders().entrySet()) {
             resp.setValue(header.getKey(), header.getValue());
         }
     }
@@ -65,8 +65,8 @@ public class ResponseHandler {
     private void streamResponse(Response resp, ResponseParams rp) throws IOException {
         OutputStream body = null;
         try {
-            if (rp.staticFile) {
-                String fileName = rp.message;
+            if (rp.isStaticFile()) {
+                String fileName = rp.getMessage();
 
                 body = resp.getOutputStream();
 
@@ -80,7 +80,7 @@ public class ResponseHandler {
             } else {
                 body = resp.getPrintStream();
                 if (body != null) {
-                    ((PrintStream) body).print(rp.message);
+                    ((PrintStream) body).print(rp.getMessage());
                 }
             }
         } finally {
@@ -127,10 +127,10 @@ public class ResponseHandler {
             adjustedPath += "/index.html";
         }
         if (getInputStreamOrNull(adjustedPath) != null) {
-            return new ResponseParams(adjustedPath, true, Collections.<String, String>emptyMap());
+            return ResponseParams.create(adjustedPath, true, Collections.<String, String>emptyMap());
         }
         LOGGER.warning("No response found for " + path + " : returning 404");
-        return new ResponseParams(404, "", DefaultValues.PARAMS, false, Collections.<String, String>emptyMap());
+        return ResponseParams.create(404, "", DefaultValues.PARAMS, false, Collections.<String, String>emptyMap());
     }
 
     private InputStream getInputStreamOrNull(String fileName) {

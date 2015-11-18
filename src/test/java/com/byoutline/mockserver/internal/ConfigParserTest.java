@@ -53,7 +53,7 @@ public class ConfigParserTest {
         ParsedConfig configResult = configParser.parseConfig(configJson);
 
         //then
-        assertThat(configResult.responses.get(0).getKey().method).isEqualTo(TestConstants.METHOD);
+        assertThat(configResult.responses.get(0).getKey().getMethod()).isEqualTo(TestConstants.METHOD);
 
     }
 
@@ -68,7 +68,7 @@ public class ConfigParserTest {
         ParsedConfig configResult = configParser.parseConfig(configJson);
 
         //then
-        assertThat(configResult.responses.get(0).getKey().basePath).isEqualTo(TestConstants.TEST_PATH);
+        assertThat(configResult.responses.get(0).getKey().getBasePath()).isEqualTo(TestConstants.TEST_PATH);
 
     }
 
@@ -88,7 +88,7 @@ public class ConfigParserTest {
         ParsedConfig result = configParser.parseConfig(configJson);
 
         //then
-        Map<String, String> headers = result.responses.get(0).getKey().headers;
+        Map<String, String> headers = result.responses.get(0).getKey().getHeaders();
 
         assertThat(headers.get(name)).isEqualTo(value);
     }
