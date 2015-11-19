@@ -93,7 +93,8 @@ public class ConfigParser {
         return json.has(key) ? json.getInt(key) : defaultValue;
     }
 
-    private static String getStringOrDef(JSONObject json, String key, String defaultValue) throws JSONException {
+    @Nonnull
+    private static String getStringOrDef(JSONObject json, String key, @Nonnull String defaultValue) throws JSONException {
         return json.has(key) ? json.getString(key) : defaultValue;
     }
 

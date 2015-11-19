@@ -43,7 +43,7 @@ public class RequestParamsTest {
     public void shouldFailOnMissingHeader() throws Exception {
         //given
         headers = Collections.singletonMap("name", "value");
-        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
+        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, "",
                 Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, headers);
 
         //when
@@ -57,7 +57,7 @@ public class RequestParamsTest {
 
     @Test
     public void shouldCheckMethod() throws Exception {
-        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
+        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, "",
                 Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, Collections.<String, String>emptyMap());
 
         //when
@@ -73,7 +73,7 @@ public class RequestParamsTest {
     public void shouldCheckHeader() throws Exception {
         //given
         headers = Collections.singletonMap(NAME, VALUE);
-        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
+        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, "",
                 Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, headers);
 
         //when
@@ -92,7 +92,7 @@ public class RequestParamsTest {
         headers = new HashMap<String, String>();
         headers.put(NAME, VALUE);
         headers.put("missing", VALUE);
-        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
+        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, "",
                 Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, headers);
 
         //when
@@ -109,7 +109,7 @@ public class RequestParamsTest {
     public void shouldFailOnOneWrongValueOfHeader() throws Exception {
         //given
         headers.put(NAME, VALUE);
-        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, null,
+        RequestParams requestParams = RequestParams.create(TestConstants.METHOD, TestConstants.TEST_PATH, false, "",
                 Collections.<String, String>emptyMap(), MatchingMethod.CONTAINS, headers);
 
         //when

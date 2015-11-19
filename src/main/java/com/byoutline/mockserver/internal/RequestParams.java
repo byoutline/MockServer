@@ -5,7 +5,6 @@ import org.simpleframework.http.Query;
 import org.simpleframework.http.Request;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ public abstract class RequestParams {
 
     public static RequestParams create(@Nonnull String method,
                                        @Nonnull String basePath, boolean useRegexForPath,
-                                       @Nullable String bodyMustContain,
+                                       @Nonnull String bodyMustContain,
                                        @Nonnull Map<String, String> queries, @Nonnull MatchingMethod queriesMatchingMethod,
                                        @Nonnull Map<String, String> headers) {
         return new AutoValue_RequestParams(method,
@@ -35,7 +34,7 @@ public abstract class RequestParams {
 
     public abstract boolean isUseRegexForPath();
 
-    @Nullable
+    @Nonnull
     public abstract String getBodyMustContain();
 
     @Nonnull
@@ -135,21 +134,20 @@ public abstract class RequestParams {
         return false;
     }
 
-    private boolean bodyDoesNotMatch(Request req) {
+    private boolean bodyDoesMatch(Request req) {
         try {
-            if (!isEmpty(getBodyMustContain()) && !req.getContent().contains(getBodyMustContain()))
+            String bodyMustContain = getBodyMustContain();
+            //requires java 6, will not work on Android < 2.3
+            if(bodyMustContain.isEmpty()) {
                 return true;
+            }
+            return req.getContent().contains(bodyMustContain);
         } catch (IOException e) {
-            return true;
+            return false;
         }
-        return false;
     }
 
-    //requires java 6, will not work on Android < 2.3
-    private static boolean isEmpty(String string) {
-        if (string == null) {
-            return true;
-        }
-        return string.isEmpty();
+    private boolean bodyDoesNotMatch(Request req) {
+        return !bodyDoesMatch(req);
     }
 }
