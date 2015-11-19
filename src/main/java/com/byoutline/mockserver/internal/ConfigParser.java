@@ -56,11 +56,22 @@ public class ConfigParser {
                 ? configJson.getJSONArray(ConfigKeys.REQUESTS)
                 : new JSONArray();
 
+        parseRequests(jsonArrayOfRequests);
+        return new ParsedConfig(port, responses);
+    }
+
+    private void parseRequests(JSONArray jsonArrayOfRequests) throws IOException {
         for (int i = 0; i < jsonArrayOfRequests.length(); i++) {
-            JSONObject requestJsonObject = jsonArrayOfRequests.getJSONObject(i);
+            JSONObject requestJsonObject;
+            try {
+                requestJsonObject = jsonArrayOfRequests.getJSONObject(i);
+            } catch (JSONException ex) {
+                String requestFile = jsonArrayOfRequests.getString(i);
+                String requestContent = readPartialConfigFile(requestFile);
+                requestJsonObject = new JSONObject(requestContent);
+            }
             parsePathConfig(requestJsonObject);
         }
-        return new ParsedConfig(port, responses);
     }
 
     private void parsePathConfig(JSONObject requestJsonObject) throws JSONException, IOException {
@@ -69,7 +80,7 @@ public class ConfigParser {
         final String message;
         if (requestJsonObject.has(ConfigKeys.RESPONSE_FILE)) {
             String responseFileName = requestJsonObject.getString(ConfigKeys.RESPONSE_FILE);
-            String responseContentString = readResponseFile(responseFileName);
+            String responseContentString = readPartialConfigFile(responseFileName);
             message = toJsonString(responseContentString);
         } else {
             message = parseConfigResponse(requestJsonObject);
@@ -189,9 +200,9 @@ public class ConfigParser {
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
 
-    private String readResponseFile(String fileName) throws IOException {
+    private String readPartialConfigFile(String fileName) throws IOException {
         StringBuilder sb = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getResponseConfigFromFile(fileName), "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getPartialConfigFromFile(fileName), "UTF-8"));
 
         String mLine = reader.readLine();
         while (mLine != null) {

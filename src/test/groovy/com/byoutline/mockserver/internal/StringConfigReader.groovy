@@ -25,7 +25,7 @@ class StringConfigReader implements ConfigReader {
     }
 
     @Override
-    InputStream getResponseConfigFromFile(String relativePath) throws IOException {
+    InputStream getPartialConfigFromFile(String relativePath) throws IOException {
         def response = fileMap.get(relativePath)
         if (response == null) {
             return null

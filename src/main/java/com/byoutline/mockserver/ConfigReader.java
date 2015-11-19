@@ -22,14 +22,14 @@ public interface ConfigReader {
     InputStream getMainConfigFile();
 
     /**
-     * Provide input stream for file that contains response for single HTTP
-     * call.
+     * Provide input stream for file that contains partial config.
+     * (Either response for single HTTP call, or body of single request).
      *
      * @param relativePath relative path (usually only file name) of file that was in main config.
      * @throws java.io.IOException if there is no such a file and 404 should be
      *                             returned.
      */
-    InputStream getResponseConfigFromFile(String relativePath) throws IOException;
+    InputStream getPartialConfigFromFile(String relativePath) throws IOException;
 
     /**
      * Provide a static file that should be served for GET call.

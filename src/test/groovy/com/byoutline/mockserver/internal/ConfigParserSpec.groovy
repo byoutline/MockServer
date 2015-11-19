@@ -30,6 +30,21 @@ class ConfigParserSpec extends Specification {
     def jsonResponse = '["json"]'
     @Shared
     def responseFilePath = '/responseFile.json'
+    @Shared
+    def requestFilePath = '/request.json'
+    @Shared
+    def requestFileWithResponseFilePath = '/requestWithRequestFile.json'
+    @Shared
+    def requestFileContent = """{
+                    "method": "$method",
+                    "path": "$path"
+                }"""
+    @Shared
+    def requestFileWithResponseFileContent = """{
+                    "method": "$method",
+                    "path": "$path",
+                    "response file": "$responseFilePath"
+                }"""
 
     @Shared
     def simplePath = """{
@@ -143,6 +158,14 @@ class ConfigParserSpec extends Specification {
                 }
             ]
         }"""
+    @Shared
+    def requestFileSimple = """{
+            "requests": [ "$requestFilePath" ]
+        }"""
+    @Shared
+    def requestFileWithResponseFile = """{
+            "requests": [ "$requestFileWithResponseFilePath" ]
+        }"""
 
 
     def "should return empty config if config file is empty"() {
@@ -171,7 +194,7 @@ class ConfigParserSpec extends Specification {
     @Unroll
     def "should read request: #expRequest from #config"() {
         given:
-        def reader = new StringConfigReader(config)
+        def reader = new StringConfigReader(config, [(requestFilePath): requestFileContent])
         when:
         def json = ConfigParser.getMainConfigJson(reader)
         def instance = new ConfigParser(reader)
@@ -181,20 +204,21 @@ class ConfigParserSpec extends Specification {
         def requestParams = result.responses.get(0).key
         requestParams == expRequest
         where:
-        config       | expRequest
-        simplePath   | createRequest(false, '', [:], [:])
-        basePath     | createRequest(false, '', [:], [:])
-        patternPath  | createRequest(true, '', [:], [:])
-        defaultQuery | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
-        exactQuery   | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
-        header       | createRequest(false, '', [:], [(headerKey): headerVal])
-        body         | createRequest(false, bodyContent, [:], [:])
+        config            | expRequest
+        simplePath        | createRequest(false, '', [:], [:])
+        basePath          | createRequest(false, '', [:], [:])
+        patternPath       | createRequest(true, '', [:], [:])
+        defaultQuery      | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
+        exactQuery        | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
+        header            | createRequest(false, '', [:], [(headerKey): headerVal])
+        body              | createRequest(false, bodyContent, [:], [:])
+        requestFileSimple | createRequest(false, '', [:], [:])
     }
 
     @Unroll
     def "should read response: #expResponse from #config"() {
         given:
-        def reader = new StringConfigReader(config, [(responseFilePath): jsonResponse])
+        def reader = new StringConfigReader(config, [(responseFilePath): jsonResponse, (requestFileWithResponseFilePath): requestFileWithResponseFileContent])
         when:
         def json = ConfigParser.getMainConfigJson(reader)
         def instance = new ConfigParser(reader)
@@ -204,11 +228,12 @@ class ConfigParserSpec extends Specification {
         def requestParams = result.responses.get(0).value
         requestParams == expResponse
         where:
-        config          | expResponse
-        simpleResponse  | ResponseParams.create(response, false, [:])
-        responseCode    | ResponseParams.create(213, 'OK', false, [:])
-        responseHeaders | ResponseParams.create('OK', false, [(headerKey): headerVal])
-        responseFile    | ResponseParams.create(jsonResponse, false, [:])
+        config                      | expResponse
+        simpleResponse              | ResponseParams.create(response, false, [:])
+        responseCode                | ResponseParams.create(213, 'OK', false, [:])
+        responseHeaders             | ResponseParams.create('OK', false, [(headerKey): headerVal])
+        responseFile                | ResponseParams.create(jsonResponse, false, [:])
+        requestFileWithResponseFile | ResponseParams.create(jsonResponse, false, [:])
     }
 
     def createRequest(boolean useRegexForPath,
