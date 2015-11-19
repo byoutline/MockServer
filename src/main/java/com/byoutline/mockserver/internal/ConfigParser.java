@@ -89,14 +89,6 @@ public class ConfigParser {
         addRequestAndResponse(path, responseCode, message, headers);
     }
 
-    private int getIntOrDef(JSONObject json, String key, int defaultValue) throws JSONException {
-        return json.has(key) ? json.getInt(key) : defaultValue;
-    }
-
-    @Nonnull
-    private static String getStringOrDef(JSONObject json, String key, @Nonnull String defaultValue) throws JSONException {
-        return json.has(key) ? json.getString(key) : defaultValue;
-    }
 
     private Map<String, String> getResponseHeaders(JSONObject requestJsonObject) throws JSONException {
         if (requestJsonObject.has(ConfigKeys.RESPONSE_HEADERS)) {
@@ -104,14 +96,6 @@ public class ConfigParser {
             return getStringStringMapFromJson(headers);
         } else {
             return Collections.<String, String>emptyMap();
-        }
-    }
-
-    private static String toJsonString(String responseString) throws JSONException {
-        try {
-            return new JSONObject(responseString).toString();
-        } catch (JSONException ex) {
-            return new JSONArray(responseString).toString();
         }
     }
 
@@ -129,7 +113,7 @@ public class ConfigParser {
         Map<String, String> headersMap = getRequestHeaders(requestJsonObject, configReader);
         try {
             JSONObject pathObject = requestJsonObject.getJSONObject(ConfigKeys.PATH);
-            Map<String, String> queryMap = getPathQueries(pathObject);
+            Map<String, String> queryMap = getPathQueries(pathObject, configReader);
             MatchingMethod queryMatchingMethod = getQueryMappingMethod(pathObject);
 
             if (pathObject.has(ConfigKeys.PATH_BASE)) {
@@ -149,34 +133,12 @@ public class ConfigParser {
     }
 
     private static Map<String, String> getRequestHeaders(JSONObject requestJsonObject, ConfigReader configReader) throws IOException {
-        Map<String, String> headersFromFile = getRequestHeadersFromFile(requestJsonObject, configReader);
-        Map<String, String> headersFromObject = getStringMapFromObject(requestJsonObject, ConfigKeys.REQUEST_HEADERS);
-        // Override headers from file with headers from object if needed.
-        Map<String, String> headers = new HashMap<String, String>(headersFromFile);
-        headers.putAll(headersFromObject);
-        return headers;
+        return getStringMapFromFileAndObject(requestJsonObject, configReader, ConfigKeys.REQUEST_HEADERS_FILE, ConfigKeys.REQUEST_HEADERS);
     }
 
-    private static Map<String, String> getStringMapFromObject(JSONObject requestJsonObject, String requestHeaders) {
-        if (!requestJsonObject.has(requestHeaders)) {
-            return Collections.<String, String>emptyMap();
-        }
-        JSONObject headers = requestJsonObject.getJSONObject(requestHeaders);
-        return getStringStringMapFromJson(headers);
-    }
 
-    private static Map<String, String> getRequestHeadersFromFile(JSONObject requestJsonObject, ConfigReader configReader) throws IOException {
-        String headersFilePath = getStringOrDef(requestJsonObject, ConfigKeys.REQUEST_HEADERS_FILE, "");
-        if (!headersFilePath.isEmpty()) {
-            String headersFileContent = readPartialConfigFile(headersFilePath, configReader);
-            JSONObject headersFromFileJson = new JSONObject(headersFileContent);
-            return getStringStringMapFromJson(headersFromFileJson);
-        }
-        return Collections.<String, String>emptyMap();
-    }
-
-    private static Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
-        return getStringMapFromObject(pathObject, ConfigKeys.PATH_QUERIES);
+    private static Map<String, String> getPathQueries(JSONObject pathObject, ConfigReader configReader) throws IOException {
+        return getStringMapFromFileAndObject(pathObject, configReader, ConfigKeys.PATH_QUERIES_FILE, ConfigKeys.PATH_QUERIES);
     }
 
     private static MatchingMethod getQueryMappingMethod(JSONObject pathObject) {
@@ -193,18 +155,7 @@ public class ConfigParser {
         throw new JSONException("Invalid " + ConfigKeys.PATH_QUERIES_MATCHING_METHOD + " value: " + matchingMethod);
     }
 
-    private static Map<String, String> getStringStringMapFromJson(JSONObject queries) throws JSONException {
-        Iterator queryIterator = queries.keys();
-        Map<String, String> queryMap = new HashMap<String, String>(8);
-        while (queryIterator.hasNext()) {
-            String query = queryIterator.next().toString();
-            String value = queries.getString(query);
-            queryMap.put(query, value);
-        }
-        return queryMap;
-    }
-
-    private String parseConfigResponse(JSONObject requestJsonObject) throws JSONException {
+    private static String parseConfigResponse(JSONObject requestJsonObject) throws JSONException {
         try {
             return requestJsonObject.getJSONObject(ConfigKeys.RESPONSE).toString();
         } catch (JSONException ex) {
@@ -215,6 +166,63 @@ public class ConfigParser {
     private void addRequestAndResponse(RequestParams path, int responseCode, String message, Map<String, String> headers) {
         ResponseParams rp = ResponseParams.create(responseCode, message, false, headers);
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
+    }
+
+    private static int getIntOrDef(JSONObject json, String key, int defaultValue) throws JSONException {
+        return json.has(key) ? json.getInt(key) : defaultValue;
+    }
+
+    @Nonnull
+    private static String getStringOrDef(JSONObject json, String key, @Nonnull String defaultValue) throws JSONException {
+        return json.has(key) ? json.getString(key) : defaultValue;
+    }
+
+
+    private static String toJsonString(String responseString) throws JSONException {
+        try {
+            return new JSONObject(responseString).toString();
+        } catch (JSONException ex) {
+            return new JSONArray(responseString).toString();
+        }
+    }
+
+    private static Map<String, String> getStringMapFromFileAndObject(JSONObject requestJsonObject, ConfigReader configReader, String fileConfigKey, String objectConfigKey) throws IOException {
+        Map<String, String> headersFromFile = getStringMapFromFile(requestJsonObject, configReader, fileConfigKey);
+        Map<String, String> headersFromObject = getStringMapFromObject(requestJsonObject, objectConfigKey);
+        // Override headers from file with headers from object if needed.
+        Map<String, String> headers = new HashMap<String, String>(headersFromFile);
+        headers.putAll(headersFromObject);
+        return headers;
+    }
+
+    private static Map<String, String> getStringMapFromFile(JSONObject requestJsonObject, ConfigReader configReader, String key)
+            throws IOException {
+        String headersFilePath = getStringOrDef(requestJsonObject, key, "");
+        if (!headersFilePath.isEmpty()) {
+            String headersFileContent = readPartialConfigFile(headersFilePath, configReader);
+            JSONObject headersFromFileJson = new JSONObject(headersFileContent);
+            return getStringStringMapFromJson(headersFromFileJson);
+        }
+        return Collections.<String, String>emptyMap();
+    }
+
+    private static Map<String, String> getStringMapFromObject(JSONObject requestJsonObject, String requestHeaders) {
+        if (!requestJsonObject.has(requestHeaders)) {
+            return Collections.<String, String>emptyMap();
+        }
+        JSONObject headers = requestJsonObject.getJSONObject(requestHeaders);
+        return getStringStringMapFromJson(headers);
+    }
+
+    private static Map<String, String> getStringStringMapFromJson(JSONObject queries) throws JSONException {
+        Iterator queryIterator = queries.keys();
+        Map<String, String> queryMap = new HashMap<String, String>(8);
+        while (queryIterator.hasNext()) {
+            String query = queryIterator.next().toString();
+            String value = queries.getString(query);
+            queryMap.put(query, value);
+        }
+        return queryMap;
     }
 
     private static String readPartialConfigFile(String fileName, ConfigReader fileReader) throws IOException {

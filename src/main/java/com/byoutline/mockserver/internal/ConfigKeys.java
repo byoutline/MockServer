@@ -12,6 +12,7 @@ public class ConfigKeys {
     public static final String URL_PATTERN = "urlPattern";
     public static final String PATH_BASE = "base";
     public static final String PATH_QUERIES = "queries";
+    public static final String PATH_QUERIES_FILE = "queries file";
     public static final String PATH_QUERIES_MATCHING_METHOD = "queriesMatchingMethod";
     public static final String CODE = "code";
     public static final String RESPONSE = "response";

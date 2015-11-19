@@ -18,6 +18,10 @@ class ConfigParserRequestParsingSpec extends Specification {
     @Shared
     def queryVal = 'user'
     @Shared
+    def queryKey2 = 'a'
+    @Shared
+    def queryVal2 = 'b'
+    @Shared
     def headerKey = 'sessionId'
     @Shared
     def headerKey2 = 'custom header'
@@ -35,10 +39,16 @@ class ConfigParserRequestParsingSpec extends Specification {
                     "method": "$method",
                     "path": "$path"
                 }"""
+
     @Shared
     def headerFilePath = '/header.json'
     @Shared
-    def headerFileContent =  """{ "$headerKey": "$headerVal"  }"""
+    def headerFileContent = """{ "$headerKey": "$headerVal"  }"""
+
+    @Shared
+    def queriesFilePath = "/queries.json"
+    @Shared
+    def queriesFileContent = """{"$queryKey":"$queryVal"}"""
 
     @Shared
     def simplePath = """{
@@ -92,6 +102,32 @@ class ConfigParserRequestParsingSpec extends Specification {
                 }
             ]
         }"""
+    @Shared
+    def queryFile = """{ "requests": [{
+      "method": "$method",
+      "path": {
+        "base": "$path",
+        "queries file": "$queriesFilePath"
+      }
+    }]}"""
+    @Shared
+    def queryFileOverride = """{ "requests": [{
+      "method": "$method",
+      "path": {
+        "base": "$path",
+        "queries file": "$queriesFilePath",
+        "queries": { "$queryKey": "$queryVal2" }
+      }
+    }]}"""
+    @Shared
+    def queryFileSum = """{ "requests": [{
+      "method": "$method",
+      "path": {
+        "base": "$path",
+        "queries file": "$queriesFilePath",
+        "queries": { "$queryKey2": "$queryVal2" }
+      }
+    }]}"""
     @Shared
     def header = """{
             "requests": [
@@ -178,7 +214,8 @@ class ConfigParserRequestParsingSpec extends Specification {
         given:
         def reader = new StringConfigReader(config, [
                 (requestFilePath): requestFileContent,
-                (headerFilePath): headerFileContent
+                (headerFilePath) : headerFileContent,
+                (queriesFilePath): queriesFileContent
         ])
         when:
         def json = ConfigParser.getMainConfigJson(reader)
@@ -195,6 +232,9 @@ class ConfigParserRequestParsingSpec extends Specification {
         patternPath        | createRequest(true, '', [:], [:])
         defaultQuery       | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
         exactQuery         | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
+        queryFile          | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
+        queryFileSum       | createRequest(false, '', [(queryKey): queryVal, (queryKey2): queryVal2], DefaultValues.QUERY_MATCHING_METHOD, [:])
+        queryFileOverride  | createRequest(false, '', [(queryKey): queryVal2], DefaultValues.QUERY_MATCHING_METHOD, [:])
         header             | createRequest(false, '', [:], [(headerKey): headerVal])
         headerPath         | createRequest(false, '', [:], [(headerKey): headerVal])
         headerPathOverride | createRequest(false, '', [:], [(headerKey): headerVal2])
