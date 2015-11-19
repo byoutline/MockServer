@@ -8,7 +8,7 @@ import spock.lang.Unroll
 /**
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
  */
-class ConfigParserSpec extends Specification {
+class ConfigParserRequestParsingSpec extends Specification {
     @Shared
     def path = '/a'
     @Shared
@@ -25,25 +25,11 @@ class ConfigParserSpec extends Specification {
     def bodyContent = 'body content'
 
     @Shared
-    def response = 'resp'
-    @Shared
-    def jsonResponse = '["json"]'
-    @Shared
-    def responseFilePath = '/responseFile.json'
-    @Shared
     def requestFilePath = '/request.json'
-    @Shared
-    def requestFileWithResponseFilePath = '/requestWithRequestFile.json'
     @Shared
     def requestFileContent = """{
                     "method": "$method",
                     "path": "$path"
-                }"""
-    @Shared
-    def requestFileWithResponseFileContent = """{
-                    "method": "$method",
-                    "path": "$path",
-                    "response file": "$responseFilePath"
                 }"""
 
     @Shared
@@ -119,52 +105,8 @@ class ConfigParserSpec extends Specification {
             ]
         }"""
     @Shared
-    def simpleResponse = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response": "$response"
-                }
-            ]
-        }"""
-    @Shared
-    def responseCode = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "code": "213"
-                }
-            ]
-        }"""
-    @Shared
-    def responseHeaders = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response headers": { "$headerKey": "$headerVal"  }
-                }
-            ]
-        }"""
-    @Shared
-    def responseFile = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response file": "$responseFilePath"
-                }
-            ]
-        }"""
-    @Shared
     def requestFileSimple = """{
             "requests": [ "$requestFilePath" ]
-        }"""
-    @Shared
-    def requestFileWithResponseFile = """{
-            "requests": [ "$requestFileWithResponseFilePath" ]
         }"""
 
 
@@ -213,27 +155,6 @@ class ConfigParserSpec extends Specification {
         header            | createRequest(false, '', [:], [(headerKey): headerVal])
         body              | createRequest(false, bodyContent, [:], [:])
         requestFileSimple | createRequest(false, '', [:], [:])
-    }
-
-    @Unroll
-    def "should read response: #expResponse from #config"() {
-        given:
-        def reader = new StringConfigReader(config, [(responseFilePath): jsonResponse, (requestFileWithResponseFilePath): requestFileWithResponseFileContent])
-        when:
-        def json = ConfigParser.getMainConfigJson(reader)
-        def instance = new ConfigParser(reader)
-        def result = instance.parseConfig(json)
-        then:
-        result.responses.size() == 1
-        def requestParams = result.responses.get(0).value
-        requestParams == expResponse
-        where:
-        config                      | expResponse
-        simpleResponse              | ResponseParams.create(response, false, [:])
-        responseCode                | ResponseParams.create(213, 'OK', false, [:])
-        responseHeaders             | ResponseParams.create('OK', false, [(headerKey): headerVal])
-        responseFile                | ResponseParams.create(jsonResponse, false, [:])
-        requestFileWithResponseFile | ResponseParams.create(jsonResponse, false, [:])
     }
 
     def createRequest(boolean useRegexForPath,
