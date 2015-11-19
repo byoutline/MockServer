@@ -9,11 +9,11 @@ public class ConfigKeys {
     public static final String PORT = "port";
     public static final String METHOD = "method";
     public static final String PATH = "path";
-    public static final String URL_PATTERN = "urlPattern";
+    public static final String URL_PATTERN = "url pattern";
     public static final String PATH_BASE = "base";
     public static final String PATH_QUERIES = "queries";
     public static final String PATH_QUERIES_FILE = "queries file";
-    public static final String PATH_QUERIES_MATCHING_METHOD = "queriesMatchingMethod";
+    public static final String PATH_QUERIES_MATCHING_METHOD = "queries matching method";
     public static final String CODE = "code";
     public static final String RESPONSE = "response";
     public static final String RESPONSE_FILE = "response file";

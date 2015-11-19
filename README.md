@@ -127,7 +127,7 @@ Example config:
         {
             "method": "DELETE",
             "path": {
-                "urlPattern": "/books/[0-9]+",
+                "url pattern": "/books/[0-9]+",
                 "queries": {
                     "otp": ".*"
                 }

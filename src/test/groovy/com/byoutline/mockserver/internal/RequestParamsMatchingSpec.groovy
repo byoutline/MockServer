@@ -15,7 +15,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
     def regexGet = '''{
       "method": "GET",
       "path": {
-        "urlPattern": "/user.*"
+        "url pattern": "/user.*"
       },
       "code": 200,
       "response file": "user.json"
@@ -41,7 +41,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "DELETE",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "EXACT",
+        "queries matching method": "EXACT",
         "queries": { "id": "[0-9][0-9][0-9][0-9]" }
       },
       "code": 204,
@@ -62,7 +62,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "PUT",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "CONTAINS",
+        "queries matching method": "CONTAINS",
         "queries": { "username": "user" }
       },
       "code": 204,
@@ -73,7 +73,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "PUT",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "EXACT",
+        "queries matching method": "EXACT",
         "queries": { "username": "user" }
       },
       "code": 204,
@@ -84,7 +84,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "PUT",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "NOT_CONTAINS",
+        "queries matching method": "NOT_CONTAINS",
         "queries": { "username": "user" }
       },
       "code": 204,
@@ -105,7 +105,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "PUT",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "EXACT",
+        "queries matching method": "EXACT",
         "queries": { "username": "us.*","pass": "[a-h][0-9]+[a-z]" }
       },
       "code": 204,
@@ -116,7 +116,7 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
       "method": "PUT",
       "path": {
         "base": "/user",
-        "queriesMatchingMethod": "EXACT"
+        "queries matching method": "EXACT"
       },
       "code": 204,
       "response": ""

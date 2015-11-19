@@ -63,7 +63,7 @@ class ConfigParserRequestParsingSpec extends Specification {
     @Shared
     def patternPath = """{"requests": [{
         "method": "$method",
-        "path": { "urlPattern": "$path" }
+        "path": { "url pattern": "$path" }
     } ]}"""
     @Shared
     def defaultQuery = """{"requests": [{
@@ -78,7 +78,7 @@ class ConfigParserRequestParsingSpec extends Specification {
         "method": "$method",
         "path": {
             "base": "$path",
-            "queriesMatchingMethod": "EXACT",
+            "queries matching method": "EXACT",
             "queries": { "$queryKey": "$queryVal" }
         },
     } ]}"""
