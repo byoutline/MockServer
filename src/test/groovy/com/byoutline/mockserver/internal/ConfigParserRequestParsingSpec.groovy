@@ -36,9 +36,9 @@ class ConfigParserRequestParsingSpec extends Specification {
     def requestFilePath = '/request.json'
     @Shared
     def requestFileContent = """{
-                    "method": "$method",
-                    "path": "$path"
-                }"""
+        "method": "$method",
+        "path": "$path"
+    }"""
 
     @Shared
     def headerFilePath = '/header.json'
@@ -51,139 +51,99 @@ class ConfigParserRequestParsingSpec extends Specification {
     def queriesFileContent = """{"$queryKey":"$queryVal"}"""
 
     @Shared
-    def simplePath = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path"
-                }
-            ]
-        }"""
+    def simplePath = """{ "requests": [{
+        "method": "$method",
+        "path": "$path"
+    } ]}"""
     @Shared
-    def basePath = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": { "base": "$path" }
-                }
-            ]
-        }"""
+    def basePath = """{"requests": [{
+        "method": "$method",
+        "path": { "base": "$path" }
+    } ]}"""
     @Shared
-    def patternPath = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": { "urlPattern": "$path" }
-                }
-            ]
-        }"""
+    def patternPath = """{"requests": [{
+        "method": "$method",
+        "path": { "urlPattern": "$path" }
+    } ]}"""
     @Shared
-    def defaultQuery = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": {
-                        "base": "$path",
-                        "queries": { "$queryKey": "$queryVal" }
-                    },
-                }
-            ]
-        }"""
+    def defaultQuery = """{"requests": [{
+        "method": "$method",
+        "path": {
+            "base": "$path",
+            "queries": { "$queryKey": "$queryVal" }
+        },
+    } ]}"""
     @Shared
-    def exactQuery = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": {
-                        "base": "$path",
-                        "queriesMatchingMethod": "EXACT",
-                        "queries": { "$queryKey": "$queryVal" }
-                    },
-                }
-            ]
-        }"""
+    def exactQuery = """{"requests": [{
+        "method": "$method",
+        "path": {
+            "base": "$path",
+            "queriesMatchingMethod": "EXACT",
+            "queries": { "$queryKey": "$queryVal" }
+        },
+    } ]}"""
     @Shared
     def queryFile = """{ "requests": [{
-      "method": "$method",
-      "path": {
-        "base": "$path",
-        "queries file": "$queriesFilePath"
-      }
-    }]}"""
+        "method": "$method",
+        "path": {
+            "base": "$path",
+            "queries file": "$queriesFilePath"
+        }
+    } ]}"""
     @Shared
     def queryFileOverride = """{ "requests": [{
-      "method": "$method",
-      "path": {
-        "base": "$path",
-        "queries file": "$queriesFilePath",
-        "queries": { "$queryKey": "$queryVal2" }
-      }
-    }]}"""
+        "method": "$method",
+        "path": {
+            "base": "$path",
+            "queries file": "$queriesFilePath",
+            "queries": { "$queryKey": "$queryVal2" }
+        }
+    } ]}"""
     @Shared
     def queryFileSum = """{ "requests": [{
-      "method": "$method",
-      "path": {
-        "base": "$path",
-        "queries file": "$queriesFilePath",
-        "queries": { "$queryKey2": "$queryVal2" }
-      }
+        "method": "$method",
+        "path": {
+            "base": "$path",
+            "queries file": "$queriesFilePath",
+            "queries": { "$queryKey2": "$queryVal2" }
+        }
     }]}"""
     @Shared
-    def header = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "headers": { "$headerKey": "$headerVal"  }
-                }
-            ]
-        }"""
+    def header = """{"requests": [{
+        "method": "$method",
+        "path": "$path",
+        "headers": { "$headerKey": "$headerVal"  }
+    } ]}"""
     @Shared
-    def headerPath = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "headers file": "$headerFilePath"
-                }
-            ]
-        }"""
+    def headerPath = """{"requests": [{
+        "method": "$method",
+        "path": "$path",
+        "headers file": "$headerFilePath"
+    } ]}"""
     @Shared
-    def headerPathOverride = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "headers file": "$headerFilePath",
-                    "headers": { "$headerKey": "$headerVal2"  }
-                }
-            ]
-        }"""
+    def headerPathOverride = """{"requests": [{
+        "method": "$method",
+        "path": "$path",
+        "headers file": "$headerFilePath",
+        "headers": { "$headerKey": "$headerVal2"  }
+    } ]}"""
     @Shared
-    def headerPathSum = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "headers file": "$headerFilePath",
-                    "headers": { "$headerKey2": "$headerVal2"  }
-                }
-            ]
-        }"""
+    def headerPathSum = """{ "requests": [{
+        "method": "$method",
+        "path": "$path",
+        "headers file": "$headerFilePath",
+        "headers": { "$headerKey2": "$headerVal2"  }
+    } ] }"""
     @Shared
-    def body = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "bodyContains": "$bodyContent"
-                }
-            ]
-        }"""
+    def body = """{"requests": [{
+        "method": "$method",
+        "path": "$path",
+        "bodyContains": "$bodyContent"
+    } ]}"""
     @Shared
     def requestFileSimple = """{
-            "requests": [ "$requestFilePath" ]
-        }"""
+        "requests": [ "$requestFilePath" ]
+    }"""
 
 
     def "should return empty config if config file is empty"() {

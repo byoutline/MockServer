@@ -29,56 +29,39 @@ class ConfigParserResponseParsingSpec extends Specification {
 
     @Shared
     def requestFileWithResponseFileContent = """{
-                    "method": "$method",
-                    "path": "$path",
-                    "response file": "$responseFilePath"
-                }"""
+        "method": "$method",
+        "path": "$path",
+        "response file": "$responseFilePath"
+    }"""
 
-
     @Shared
-    def simpleResponse = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response": "$response"
-                }
-            ]
-        }"""
+    def simpleResponse = """{ "requests": [{
+        "method": "$method",
+        "path": "$path",
+        "response": "$response"
+    } ]}"""
     @Shared
-    def responseCode = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "code": "213"
-                }
-            ]
-        }"""
+    def responseCode = """{ "requests": [{
+        "method": "$method",
+        "path": "$path",
+        "code": "213"
+    } ]}"""
     @Shared
-    def responseHeaders = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response headers": { "$headerKey": "$headerVal"  }
-                }
-            ]
-        }"""
+    def responseHeaders = """{ "requests": [{
+        "method": "$method",
+        "path": "$path",
+        "response headers": { "$headerKey": "$headerVal"  }
+    } ]}"""
     @Shared
-    def responseFile = """{
-            "requests": [
-                {
-                    "method": "$method",
-                    "path": "$path",
-                    "response file": "$responseFilePath"
-                }
-            ]
-        }"""
+    def responseFile = """{ "requests": [{
+        "method": "$method",
+        "path": "$path",
+        "response file": "$responseFilePath"
+    } ]}"""
     @Shared
     def requestFileWithResponseFile = """{
-            "requests": [ "$requestFileWithResponseFilePath" ]
-        }"""
+        "requests": [ "$requestFileWithResponseFilePath" ]
+    }"""
 
     @Unroll
     def "should read response: #expResponse from #config"() {
