@@ -131,7 +131,8 @@ class RequestParamsMatchingSpec extends spock.lang.Specification {
     def "should return #expResult for #method , #url , #queries for jsonConfig: #jsonConfig"() {
         given:
         def jsonObj = new JSONObject(jsonConfig)
-        def params = ConfigParser.getPathFromJson(jsonObj)
+        def reader = new StringConfigReader(jsonConfig)
+        def params = ConfigParser.getPathFromJson(jsonObj, reader)
 
         when:
         def result = params.matches(request)

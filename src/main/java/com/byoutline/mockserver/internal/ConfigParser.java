@@ -67,7 +67,7 @@ public class ConfigParser {
                 requestJsonObject = jsonArrayOfRequests.getJSONObject(i);
             } catch (JSONException ex) {
                 String requestFile = jsonArrayOfRequests.getString(i);
-                String requestContent = readPartialConfigFile(requestFile);
+                String requestContent = readPartialConfigFile(requestFile, fileReader);
                 requestJsonObject = new JSONObject(requestContent);
             }
             parsePathConfig(requestJsonObject);
@@ -75,12 +75,12 @@ public class ConfigParser {
     }
 
     private void parsePathConfig(JSONObject requestJsonObject) throws JSONException, IOException {
-        RequestParams path = getPathFromJson(requestJsonObject);
+        RequestParams path = getPathFromJson(requestJsonObject, fileReader);
         int responseCode = getIntOrDef(requestJsonObject, ConfigKeys.CODE, DefaultValues.RESPONSE_CODE);
         final String message;
         if (requestJsonObject.has(ConfigKeys.RESPONSE_FILE)) {
             String responseFileName = requestJsonObject.getString(ConfigKeys.RESPONSE_FILE);
-            String responseContentString = readPartialConfigFile(responseFileName);
+            String responseContentString = readPartialConfigFile(responseFileName, fileReader);
             message = toJsonString(responseContentString);
         } else {
             message = parseConfigResponse(requestJsonObject);
@@ -106,7 +106,7 @@ public class ConfigParser {
         }
     }
 
-    private String toJsonString(String responseString) throws JSONException {
+    private static String toJsonString(String responseString) throws JSONException {
         try {
             return new JSONObject(responseString).toString();
         } catch (JSONException ex) {
@@ -121,10 +121,11 @@ public class ConfigParser {
      * @return {@link RequestParams} with values from json
      * @throws JSONException if object does not match {@link RequestParams} syntax
      */
-    static RequestParams getPathFromJson(JSONObject requestJsonObject) throws JSONException {
+    static RequestParams getPathFromJson(@Nonnull JSONObject requestJsonObject, @Nonnull ConfigReader configReader)
+            throws JSONException, IOException {
         String method = requestJsonObject.getString(ConfigKeys.METHOD);
         String bodyMustContain = getStringOrDef(requestJsonObject, ConfigKeys.BODY_CONTAINS, "");
-        Map<String, String> headersMap = getRequestHeaders(requestJsonObject);
+        Map<String, String> headersMap = getRequestHeaders(requestJsonObject, configReader);
         try {
             JSONObject pathObject = requestJsonObject.getJSONObject(ConfigKeys.PATH);
             Map<String, String> queryMap = getPathQueries(pathObject);
@@ -146,20 +147,35 @@ public class ConfigParser {
         }
     }
 
-    private static Map<String, String> getRequestHeaders(JSONObject requestJsonObject) {
-        if (!requestJsonObject.has(ConfigKeys.REQUEST_HEADERS)) {
-            return Collections.emptyMap();
+    private static Map<String, String> getRequestHeaders(JSONObject requestJsonObject, ConfigReader configReader) throws IOException {
+        Map<String, String> headersFromFile = getRequestHeadersFromFile(requestJsonObject, configReader);
+        Map<String, String> headersFromObject = getStringMapFromObject(requestJsonObject, ConfigKeys.REQUEST_HEADERS);
+        // Override headers from file with headers from object if needed.
+        Map<String, String> headers = new HashMap<String, String>(headersFromFile);
+        headers.putAll(headersFromObject);
+        return headers;
+    }
+
+    private static Map<String, String> getStringMapFromObject(JSONObject requestJsonObject, String requestHeaders) {
+        if (!requestJsonObject.has(requestHeaders)) {
+            return Collections.<String, String>emptyMap();
         }
-        JSONObject headers = requestJsonObject.getJSONObject(ConfigKeys.REQUEST_HEADERS);
+        JSONObject headers = requestJsonObject.getJSONObject(requestHeaders);
         return getStringStringMapFromJson(headers);
     }
 
-    private static Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
-        if (!pathObject.has(ConfigKeys.PATH_QUERIES)) {
-            return Collections.emptyMap();
+    private static Map<String, String> getRequestHeadersFromFile(JSONObject requestJsonObject, ConfigReader configReader) throws IOException {
+        String headersFilePath = getStringOrDef(requestJsonObject, ConfigKeys.REQUEST_HEADERS_FILE, "");
+        if (!headersFilePath.isEmpty()) {
+            String headersFileContent = readPartialConfigFile(headersFilePath, configReader);
+            JSONObject headersFromFileJson = new JSONObject(headersFileContent);
+            return getStringStringMapFromJson(headersFromFileJson);
         }
-        JSONObject queries = pathObject.getJSONObject(ConfigKeys.PATH_QUERIES);
-        return getStringStringMapFromJson(queries);
+        return Collections.<String, String>emptyMap();
+    }
+
+    private static Map<String, String> getPathQueries(JSONObject pathObject) throws JSONException {
+        return getStringMapFromObject(pathObject, ConfigKeys.PATH_QUERIES);
     }
 
     private static MatchingMethod getQueryMappingMethod(JSONObject pathObject) {
@@ -200,7 +216,7 @@ public class ConfigParser {
         this.responses.add(new AbstractMap.SimpleImmutableEntry<RequestParams, ResponseParams>(path, rp));
     }
 
-    private String readPartialConfigFile(String fileName) throws IOException {
+    private static String readPartialConfigFile(String fileName, ConfigReader fileReader) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(fileReader.getPartialConfigFromFile(fileName), "UTF-8"));
 

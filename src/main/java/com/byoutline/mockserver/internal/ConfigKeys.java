@@ -20,4 +20,5 @@ public class ConfigKeys {
     public static final String REQUESTS = "requests";
     public static final String BODY_CONTAINS = "bodyContains";
     public static final String REQUEST_HEADERS = "headers";
+    public static final String REQUEST_HEADERS_FILE = "headers file";
 }

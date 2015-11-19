@@ -20,7 +20,11 @@ class ConfigParserRequestParsingSpec extends Specification {
     @Shared
     def headerKey = 'sessionId'
     @Shared
+    def headerKey2 = 'custom header'
+    @Shared
     def headerVal = '1234'
+    @Shared
+    def headerVal2 = '5678'
     @Shared
     def bodyContent = 'body content'
 
@@ -31,6 +35,10 @@ class ConfigParserRequestParsingSpec extends Specification {
                     "method": "$method",
                     "path": "$path"
                 }"""
+    @Shared
+    def headerFilePath = '/header.json'
+    @Shared
+    def headerFileContent =  """{ "$headerKey": "$headerVal"  }"""
 
     @Shared
     def simplePath = """{
@@ -95,6 +103,38 @@ class ConfigParserRequestParsingSpec extends Specification {
             ]
         }"""
     @Shared
+    def headerPath = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "headers file": "$headerFilePath"
+                }
+            ]
+        }"""
+    @Shared
+    def headerPathOverride = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "headers file": "$headerFilePath",
+                    "headers": { "$headerKey": "$headerVal2"  }
+                }
+            ]
+        }"""
+    @Shared
+    def headerPathSum = """{
+            "requests": [
+                {
+                    "method": "$method",
+                    "path": "$path",
+                    "headers file": "$headerFilePath",
+                    "headers": { "$headerKey2": "$headerVal2"  }
+                }
+            ]
+        }"""
+    @Shared
     def body = """{
             "requests": [
                 {
@@ -136,7 +176,10 @@ class ConfigParserRequestParsingSpec extends Specification {
     @Unroll
     def "should read request: #expRequest from #config"() {
         given:
-        def reader = new StringConfigReader(config, [(requestFilePath): requestFileContent])
+        def reader = new StringConfigReader(config, [
+                (requestFilePath): requestFileContent,
+                (headerFilePath): headerFileContent
+        ])
         when:
         def json = ConfigParser.getMainConfigJson(reader)
         def instance = new ConfigParser(reader)
@@ -146,15 +189,18 @@ class ConfigParserRequestParsingSpec extends Specification {
         def requestParams = result.responses.get(0).key
         requestParams == expRequest
         where:
-        config            | expRequest
-        simplePath        | createRequest(false, '', [:], [:])
-        basePath          | createRequest(false, '', [:], [:])
-        patternPath       | createRequest(true, '', [:], [:])
-        defaultQuery      | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
-        exactQuery        | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
-        header            | createRequest(false, '', [:], [(headerKey): headerVal])
-        body              | createRequest(false, bodyContent, [:], [:])
-        requestFileSimple | createRequest(false, '', [:], [:])
+        config             | expRequest
+        simplePath         | createRequest(false, '', [:], [:])
+        basePath           | createRequest(false, '', [:], [:])
+        patternPath        | createRequest(true, '', [:], [:])
+        defaultQuery       | createRequest(false, '', [(queryKey): queryVal], DefaultValues.QUERY_MATCHING_METHOD, [:])
+        exactQuery         | createRequest(false, '', [(queryKey): queryVal], MatchingMethod.EXACT, [:])
+        header             | createRequest(false, '', [:], [(headerKey): headerVal])
+        headerPath         | createRequest(false, '', [:], [(headerKey): headerVal])
+        headerPathOverride | createRequest(false, '', [:], [(headerKey): headerVal2])
+        headerPathSum      | createRequest(false, '', [:], [(headerKey): headerVal, (headerKey2): headerVal2])
+        body               | createRequest(false, bodyContent, [:], [:])
+        requestFileSimple  | createRequest(false, '', [:], [:])
     }
 
     def createRequest(boolean useRegexForPath,
