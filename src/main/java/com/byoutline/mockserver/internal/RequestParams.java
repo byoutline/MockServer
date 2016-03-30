@@ -79,6 +79,8 @@ public abstract class RequestParams {
                 return !queriesContainsAll(query);
             case NOT_CONTAINS:
                 return !queriesDoesNotContain(query);
+            case ANY:
+                return false;
             default:
                 throw new AssertionError("Unknown " + ConfigKeys.PATH_QUERIES_MATCHING_METHOD +
                         ": " + getQueriesMatchingMethod());
