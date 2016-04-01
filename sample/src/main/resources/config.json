@@ -1,0 +1,10 @@
+{
+  "port": 8099,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/books",
+      "response file": "books.json"
+    }
+  ]
+}
