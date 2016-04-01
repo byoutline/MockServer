@@ -16,7 +16,7 @@ buildscript {
     }
 }
 
-apply from: 'gradle/byoutline/javaLib.gradle'
+apply from: '../gradle/byoutline/javaLib.gradle'
 
 repositories {
     mavenCentral()

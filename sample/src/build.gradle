@@ -1,0 +1,22 @@
+apply plugin: 'java'
+apply plugin: 'propdeps'
+
+buildscript {
+    repositories {
+        maven { url 'http://repo.spring.io/plugins-release' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(":mockserver")
+    provided 'javax.annotation:jsr250-api:1.0'
+}
