@@ -1,0 +1,15 @@
+[{
+  "title": "book1",
+  "properties": {
+    "author": "anonymus",
+    "release date": "2014"
+  }
+},
+  {
+    "title": "book2 ",
+    "properties": {
+      "author": "author",
+      "release date": "2000"
+    }
+  }
+]

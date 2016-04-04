@@ -32,7 +32,7 @@ public interface ConfigReader {
     InputStream getPartialConfigFromFile(String relativePath) throws IOException;
 
     /**
-     * Provide a static file that should be served for GET call.
+     * Provide a books file that should be served for GET call.
      * If no file should be returned return null or throw {@link IOException}
      *
      * @param relativePath relative path (usually only file name) of file that was requested.

@@ -18,41 +18,7 @@ public class Sample {
     private static HttpMockServer httpMockServer;
 
     public static void main(String... args) {
-        httpMockServer = HttpMockServer.startMockApiServer(new ConfigReader() {
-            @Override
-            public InputStream getMainConfigFile() {
-                File file = new File("sample/src/main/resources/config.json");
-                InputStream inputStream = null;
-                try {
-                    inputStream = new FileInputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                return inputStream;
-            }
-
-            @Override
-            public InputStream getPartialConfigFromFile(String relativePath) throws IOException {
-                FileInputStream fileInputStream = new FileInputStream("sample/src/main/resources/static/books/" + relativePath);
-                return fileInputStream;
-            }
-
-            @Override
-            public InputStream getStaticFile(String relativePath) throws IOException {
-                InputStream is = getClass().getResourceAsStream("static/"+relativePath);
-                return is;
-            }
-
-            @Override
-            public boolean isFolder(String relativePath) {
-                try {
-                    boolean directory = new File("static/" + relativePath).isFile();
-                    return !directory;
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }, NetworkType.GPRS);
+        httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(), NetworkType.GPRS);
 
         shutDownSerwer();
     }
@@ -67,7 +33,7 @@ public class Sample {
         }
     }
 }
-//make sure the selected port is not used
+//todo
 //check in web browser
 
 
