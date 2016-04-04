@@ -1,3 +1,4 @@
+```java
 public class Sample {
 
     private static HttpMockServer httpMockServer;
@@ -21,3 +22,4 @@ public class Sample {
         }
     }
 }
+```
