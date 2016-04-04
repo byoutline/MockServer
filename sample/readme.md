@@ -22,7 +22,7 @@ http server and response files. Simple example shown below.
   ]
 }
 ```
-##### tips for configuration
+##### configuration tips
  * make sure that the port is not in use by another process (and if it is,
  try to change the port or kill the process that uses this port if it is 
  negligible)
@@ -56,26 +56,13 @@ http server and response files. Simple example shown below.
 [Sample Reader](sampleReader.md)
 
 #####  Step 2 - start the serwer
-```java
-public class Sample {
+[Sample.class using HttpMockServer](SampleMain.md)
 
-    private static HttpMockServer httpMockServer;
+## Check mock data by web browser
+All we need is to keep server running some time after start because 
+system will shut down server after ending main code.
 
-    public static void main(String... args) {
-        httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(), NetworkType.GPRS);
-        
-        //after work
-        shutDownSerwer();
-    }
+[Example keep server running some time](SampleWithWebBrowser.md)
 
-
-    private static void shutDownSerwer() {
-        try {
-            Thread.sleep(100000);
-            httpMockServer.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
+Enter ```http://localhost:8099/books``` after running above example code.
+If all works you should see json response file in web browser.

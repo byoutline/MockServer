@@ -149,8 +149,3 @@ Checkout feature/sample branch.
 #### CHANGELOG ####
 [Check here](CHANGELOG.md)
 
-
-
-  
-    
-    

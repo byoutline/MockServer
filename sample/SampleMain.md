@@ -1,26 +1,21 @@
-package com.byoutline.mockserver.sample;
-
-import com.byoutline.mockserver.HttpMockServer;
-import com.byoutline.mockserver.NetworkType;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-
-/**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
- */
+Example of using HttpMockServer with GET Http method
+====================================================
+```java
 public class Sample {
 
     private static HttpMockServer httpMockServer;
 
     public static void main(String... args) {
+        
+        //start server
+        
         httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(), NetworkType.GPRS);
+        
+        //do something with mock data
+        
         doSomethingWithUsingHttpMockServer();
+        
+        // shut down server 
         shutDownSerwer();
     }
 
@@ -39,7 +34,6 @@ public class Sample {
                 result.append(line);
             }
             rd.close();
-            conn.disconnect();
             System.out.print(result.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -61,5 +55,9 @@ public class Sample {
     }
 }
 
+```
 
-
+##### comments
+* shutdown() method close server connection and stops ResponseHandler 
+immediately after finish working with server. Without using this method 
+system do the same after a while.
