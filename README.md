@@ -142,8 +142,15 @@ Example config:
 #### Usage on Android ####
 For typical use Android take a look at <a href="https://github.com/byoutline/AndroidStubServer">AndroidStubServer</a>.
 
-#### Latest Changes ####
-  * 1.4.2 When returning 404 also log what path was requested. 
-  * 1.4.1 Fix invalid response returned when ```NONE``` ```NetworkType``` was used.
-  * 1.4.0 If folder is requested and it contains index.html it will be returned instead of 404. 
-  ConfigReader requires now implementing isFolder method.
+#### Another example ####
+Checkout feature/sample branch.
+[Read about](sample/readme.md)
+
+#### CHANGELOG ####
+[Check here](CHANGELOG.md)
+
+
+
+  
+    
+    
