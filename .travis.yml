@@ -6,6 +6,7 @@ jdk:
 notifications:
   email:
     - sebastian.kacprzak@byoutline.com
+    - michal.piekarski@byoutline.com
 
 env:
   - JAVA6_HOME=/usr/lib/jvm/java-6-openjdk-amd64 TERM=dumb

@@ -11,7 +11,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.util.List;
 
 
 /**
@@ -23,80 +25,74 @@ public class ConfigServer {
     public static void main(String... args) {
 
         Options options = new Options();
-        options.addOption("c", true, "start server with custom config path (press ctrl+c to quit)");
-        options.addOption("n", true, "network type");
-        options.addOption("help",false, "help info");
+        options.addOption("n",true,"network type(GPRS,EDGE,UMTS,VPN,NONE)")
+                .addOption("h",false,"help message");
 
-        HelpFormatter formatter = new HelpFormatter();
-
-        parseCmd(options, formatter, args);
-    }
-
-    private static void parseCmd(Options options, HelpFormatter formatter, String[] args) {
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmd = parser.parse(options, args);
-            if (cmd.hasOption("n")) {
-                selectNetworkType(cmd.getOptionValue("n"));
+
+            if(cmd.hasOption("n")){
+                nt = NetworkType.valueOf(cmd.getOptionValue("n"));
                 System.out.println("Selected network type: " + nt.name());
             }
-
-            if (cmd.hasOption("c")) {
-                runServerWithPath(cmd);
-            }else if(cmd.hasOption("help")){
-
-                helpInfo(options, formatter);
-
-            }else {
-                formatter.printHelp("ConfigServer help", options);
+            if (cmd.hasOption("h")) {
+                System.out.println("HELP");
+                displayHelp(options);
             }
+
+            searchMockPathAndRunServer(cmd);
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
     }
 
-    private static void helpInfo(Options options, HelpFormatter formatter) {
+    private static void searchMockPathAndRunServer(CommandLine cmd) {
+        List targetList = cmd.getArgList();
+        if(targetList.isEmpty()){
+            System.out.println("Path not detected,enter the path to mock resources.");
+        }else{
+            String mockPath = targetList.get(0).toString();
+            File fileDir = new File(mockPath);
+            File configFile = new File(mockPath +"/config.json");
+            if (!fileDir.isDirectory()){
+                System.out.println("Please enter the directory to mock resources" +
+                        " (e.g. /home/example/mockResDir )");
+                return;
+            }
+            if (configFile.exists()){
+                runServerWithPath(mockPath);
+            }else {
+                System.out.println(" ERR: Config file not detected.");
+                return;
+            }
+
+        }
+    }
+
+    private static void displayHelp(Options options) {
         final int width = 180;
         final int descPadding = 5;
         final PrintWriter out = new PrintWriter(System.out, true);
+        HelpFormatter formatter = new HelpFormatter();
         String example =" \nExample of use:\n" +
-                " java -jar sample.jar -c /home/example/path -n EDGE\n " +
+                " java -jar sample.jar /home/example/mockResPath -n EDGE -h\n " +
                 " WHERE:\n" +
                 " /home/example/path - path to directory with mock resources\n" +
                 " EDGE - network type (possible types: NONE, EDGE,UMTS,GPRS,VPN)\n";
         formatter.setWidth(width);
         formatter.setDescPadding(descPadding);
-        formatter.printUsage(out, width,ConfigServer.class.getName(), options);
+        formatter.printUsage(out, width,ConfigServer.class.getName()+ "  /path", options);
         formatter.printWrapped(out, width, "");
         formatter.printOptions(out, width, options, formatter.getLeftPadding(), formatter.getDescPadding());
         formatter.printWrapped(out, width, example);
         formatter.printWrapped(out, width, "");
     }
 
-    private static void selectNetworkType(String n) {
-        switch (n) {
-            case "NONE":
-                nt = NetworkType.NONE;
-                break;
-            case "GPRS":
-                nt = NetworkType.GPRS;
-                break;
-            case "EDGE":
-                nt = NetworkType.EDGE;
-                break;
-            case "UMTS":
-                nt = NetworkType.UMTS;
-                break;
-            case "VPN":
-                nt = NetworkType.VPN;
-                break;
-            default:
-                break;
-        }
-    }
-
-    private static boolean runServerWithPath(CommandLine cmd) {
-        String path = cmd.getOptionValue("c");
+    private static boolean runServerWithPath(String path) {
         final HttpMockServer httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(path), NetworkType.NONE);
         try {
             synchronized (httpMockServer) {
