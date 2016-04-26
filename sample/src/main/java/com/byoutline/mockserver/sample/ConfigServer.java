@@ -20,12 +20,12 @@ import java.util.List;
  * Created by michalp on 25.04.16.
  */
 public class ConfigServer {
-    static NetworkType nt = NetworkType.NONE;
+    static NetworkType nt = NetworkType.NO_DELAY;
 
     public static void main(String... args) {
 
         Options options = new Options();
-        options.addOption("n",true,"network type(GPRS,EDGE,UMTS,VPN,NONE)")
+        options.addOption("n",true,"network type(GPRS,EDGE,UMTS,VPN,NO_DELAY)")
                 .addOption("h",false,"help message");
 
         CommandLineParser parser = new DefaultParser();
@@ -74,7 +74,7 @@ public class ConfigServer {
     }
 
     private static void displayHelp(Options options) {
-        final int width = 180;
+        final int width = 200;
         final int descPadding = 5;
         final PrintWriter out = new PrintWriter(System.out, true);
         HelpFormatter formatter = new HelpFormatter();
@@ -82,10 +82,10 @@ public class ConfigServer {
                 " java -jar sample.jar /home/example/mockResPath -n EDGE -h\n " +
                 " WHERE:\n" +
                 " /home/example/path - path to directory with mock resources\n" +
-                " EDGE - network type (possible types: NONE, EDGE,UMTS,GPRS,VPN)\n";
+                " EDGE - network type (possible types: NO_DELAY, EDGE,UMTS,GPRS,VPN)\n";
         formatter.setWidth(width);
         formatter.setDescPadding(descPadding);
-        formatter.printUsage(out, width,ConfigServer.class.getName()+ "  /path", options);
+        formatter.printUsage(out, width,ConfigServer.class.getName()+ "  /pathToMockResources", options);
         formatter.printWrapped(out, width, "");
         formatter.printOptions(out, width, options, formatter.getLeftPadding(), formatter.getDescPadding());
         formatter.printWrapped(out, width, example);
@@ -93,7 +93,7 @@ public class ConfigServer {
     }
 
     private static boolean runServerWithPath(String path) {
-        final HttpMockServer httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(path), NetworkType.NONE);
+        final HttpMockServer httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(path), NetworkType.NO_DELAY);
         try {
             synchronized (httpMockServer) {
                 httpMockServer.wait();

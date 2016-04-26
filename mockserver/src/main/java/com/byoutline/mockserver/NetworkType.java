@@ -4,11 +4,26 @@ package com.byoutline.mockserver;
  * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
  */
 public enum NetworkType {
+    /**
+     * Delay 500-200ms
+     */
     VPN(500, 2000),
+    /**
+     * Delay 150-550ms
+     */
     GPRS(150, 550),
+    /**
+     * Delay 80-400ms
+     */
     EDGE(80, 400),
+    /**
+     * Delay 35-200ms
+     */
     UMTS(35, 200),
-    NONE(0, 0);
+    /**
+     * Delay 0ms
+     */
+    NO_DELAY(0, 0);
 
     public final long minDelay;
     public final long maxDelay;
