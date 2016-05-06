@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.annotation.Nonnull;
-/**
- * Created by michalp on 04.04.16.
- */
+
 public class SampleReader implements ConfigReader {
+
     boolean customOptions = false;
     String customConfigPath;
 
@@ -23,17 +22,14 @@ public class SampleReader implements ConfigReader {
     }
 
     public SampleReader() {
-
     }
 
     @Override
     public InputStream getMainConfigFile() {
-
-        //return input stream with config.json
-        //make sure it is not null(the paths may differ depending on how the project run)
+        // return input stream with config.json
+        // make sure it is not null(the paths may differ depending on how the project run)
         File file;
         if (customOptions) {
-            System.out.println("Config path:" + customConfigPath + "/config.json");
             file = new File(customConfigPath + "/config.json");
         } else {
             file = new File("sample/src/main/resources/config.json");
@@ -50,10 +46,9 @@ public class SampleReader implements ConfigReader {
 
     @Override
     public InputStream getPartialConfigFromFile(String relativePath) throws IOException {
-
-        //in our example data are stored in the resources directory
-        //if you will use own file location,you must specify a directory here
-        //before relative path(defined in config.json as response file)
+        // in our example data are stored in the resources directory
+        // if you will use own file location,you must specify a directory here
+        // before relative path(defined in config.json as response file)
         FileInputStream fileInputStream;
         if (customOptions) {
             fileInputStream = new FileInputStream(customConfigPath + "/" + relativePath);
@@ -66,17 +61,14 @@ public class SampleReader implements ConfigReader {
 
     @Override
     public InputStream getStaticFile(String relativePath) throws IOException {
-        //needed when use static data like images
+        // needed when use static data like images
         return null;
     }
 
     @Override
     public boolean isFolder(String relativePath) {
-
-    /*
-    the search file in specified path requires checking whether
-    the current location is a directory or  the target file
-    */
+        // the search file in specified path requires checking whether
+        // the current location is a directory or  the target file
 
         try {
             boolean directory = new File(relativePath).isFile();
