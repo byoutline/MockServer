@@ -12,8 +12,8 @@ import javax.annotation.Nonnull;
 
 public class SampleReader implements ConfigReader {
 
-    boolean customOptions = false;
-    String customConfigPath;
+    private boolean customOptions = false;
+    private String customConfigPath;
 
     public SampleReader(@Nonnull String path) {
         System.out.println("Selected path:" + path);

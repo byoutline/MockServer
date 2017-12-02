@@ -12,7 +12,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 /**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
+ * Sample that starts server (with config defined in resources),
+ * makes a requests and prints a response.
  */
 public class Sample {
 
@@ -27,9 +28,8 @@ public class Sample {
     private static void doSomethingWithUsingHttpMockServer() {
         String urlString = "http://localhost:8099/books";
         StringBuilder result = new StringBuilder();
-        URL url = null;
         try {
-            url = new URL(urlString);
+            URL url = new URL(urlString);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -48,9 +48,7 @@ public class Sample {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 
     private static void shutDownSerwer() {
         try {

@@ -11,4 +11,3 @@
 * 1.4.0
     * If folder is requested and it contains index.html it will be returned instead of 404.
     * ConfigReader requires now implementing isFolder method.
-          
