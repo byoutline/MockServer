@@ -8,9 +8,6 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 15.04.14.
- */
 @AutoValue
 public abstract class RequestParams {
 

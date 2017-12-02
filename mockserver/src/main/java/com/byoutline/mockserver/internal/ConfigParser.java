@@ -3,21 +3,33 @@ package com.byoutline.mockserver.internal;
 import com.byoutline.mockserver.ConfigReader;
 import com.byoutline.mockserver.DefaultValues;
 import com.byoutline.mockserver.HttpMockServer;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.*;
-import java.util.*;
 
 /**
  * Parses {@link HttpMockServer} config file and
  * responses from assets.
  *
  * @author Sylwester Madej
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
+ * @author Sebastian Kacprzak |sebastian.kacprzak at byoutline.com| on 14.04.14.
  */
 public class ConfigParser {
 
@@ -51,14 +63,19 @@ public class ConfigParser {
     }
 
     public ParsedConfig parseConfig(@Nonnull JSONObject configJson) throws JSONException, IOException {
-        int port = configJson.optInt(ConfigKeys.PORT, DefaultValues.MOCK_SERVER_PORT);
+        int port = configJson.optInt(ConfigKeys.PORT, -1);
+        int maxPort = port;
+        if (port == -1) {
+            port = DefaultValues.MOCK_SERVER_PORT;
+            maxPort = DefaultValues.MOCK_SERVER_MAX_PORT;
+        }
 
         JSONArray jsonArrayOfRequests = configJson.has(ConfigKeys.REQUESTS)
                 ? configJson.getJSONArray(ConfigKeys.REQUESTS)
                 : new JSONArray();
 
         parseRequests(jsonArrayOfRequests);
-        return new ParsedConfig(port, responses);
+        return new ParsedConfig(port, maxPort, responses);
     }
 
     private void parseRequests(JSONArray jsonArrayOfRequests) throws IOException {

@@ -19,7 +19,7 @@ public class Sample {
 
     private static HttpMockServer httpMockServer;
 
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException, InterruptedException {
         httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(), NetworkType.GPRS);
         doSomethingWithUsingHttpMockServer();
         shutDownSerwer();

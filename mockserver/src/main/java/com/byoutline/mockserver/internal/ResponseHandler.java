@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 /**
  * Takes care of replying to requests.
  *
- * @author Sylwester Madej <sylwester.madej at byoutline.com>
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
+ * @author Sylwester Madej |sylwester.madej at byoutline.com|
+ * @author Sebastian Kacprzak |sebastian.kacprzak at byoutline.com| on 14.04.14.
  */
 public class ResponseHandler {
 

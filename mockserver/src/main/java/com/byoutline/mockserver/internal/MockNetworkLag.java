@@ -6,9 +6,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
- */
 public final class MockNetworkLag {
     private final static Logger LOGGER = Logger.getLogger(MockNetworkLag.class.getName());
     private final Random random = new Random();
