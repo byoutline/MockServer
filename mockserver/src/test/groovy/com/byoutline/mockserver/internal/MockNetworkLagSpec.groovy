@@ -9,7 +9,7 @@ import spock.lang.Specification
 class MockNetworkLagSpec extends Specification {
     def "should not divide by zero"() {
         given:
-        MockNetworkLag instance = new MockNetworkLag(NetworkType.NONE);
+        MockNetworkLag instance = new MockNetworkLag(NetworkType.NO_DELAY);
         when:
         instance.simulateNetworkLag();
         then:

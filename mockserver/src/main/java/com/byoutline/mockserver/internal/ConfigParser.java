@@ -2,6 +2,7 @@ package com.byoutline.mockserver.internal;
 
 import com.byoutline.mockserver.ConfigReader;
 import com.byoutline.mockserver.DefaultValues;
+import com.byoutline.mockserver.HttpMockServer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Parses {@link com.byoutline.mockserver.HttpMockServer} config file and
+ * Parses {@link HttpMockServer} config file and
  * responses from assets.
  *
  * @author Sylwester Madej
