@@ -3,7 +3,7 @@ package com.byoutline.mockserver.internal;
 /**
  * List of JSON keys that can be used in config file.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
+ * @author Sebastian Kacprzak |sebastian.kacprzak at byoutline.com| on 14.04.14.
  */
 public class ConfigKeys {
     public static final String PORT = "port";

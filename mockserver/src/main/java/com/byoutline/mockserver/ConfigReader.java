@@ -6,7 +6,7 @@ import java.io.InputStream;
 /**
  * Wraps platform specific bits.
  *
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com>
+ * @author Sebastian Kacprzak |sebastian.kacprzak at byoutline.com|
  * @see <a
  * href="https://github.com/byoutline/AndroidStubServer">AndroidMockServer
  * implementation</a>

@@ -12,17 +12,20 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
 /**
  * Sample that reads config from given path and starts a local server.
  * Other then being a sample this can be used for debugging config files.
+ * <p>
+ * This server will run until interrupted.
  *
  * @author michalp on 25.04.16.
  */
 public class ConfigServer {
-    public static void main(String... args) {
+    public static void main(String... args) throws IOException {
         Options options = new Options();
         options.addOption("n", true, "network type(GPRS,EDGE,UMTS,VPN,NO_DELAY)")
                 .addOption("h", false, "help message");
@@ -47,7 +50,7 @@ public class ConfigServer {
         }
     }
 
-    private static void searchMockPathAndRunServer(CommandLine cmd, NetworkType networkType) {
+    private static void searchMockPathAndRunServer(CommandLine cmd, NetworkType networkType) throws IOException {
         List targetList = cmd.getArgList();
         if (targetList.isEmpty()) {
             System.out.println("Path not detected,enter the path to mock resources.");
@@ -88,7 +91,7 @@ public class ConfigServer {
         formatter.printWrapped(out, width, "");
     }
 
-    private static boolean runServerWithPath(String path, NetworkType networkType) {
+    private static boolean runServerWithPath(String path, NetworkType networkType) throws IOException {
         final HttpMockServer httpMockServer = HttpMockServer.startMockApiServer(new SampleReader(path), networkType);
         try {
             synchronized (httpMockServer) {

@@ -156,6 +156,7 @@ class ConfigParserRequestParsingSpec extends Specification {
         then:
         result.responses.isEmpty()
         result.port == DefaultValues.MOCK_SERVER_PORT
+        result.maxPort == DefaultValues.MOCK_SERVER_MAX_PORT
     }
 
     def "should set port from config"() {
@@ -167,6 +168,7 @@ class ConfigParserRequestParsingSpec extends Specification {
         def result = instance.parseConfig(json)
         then:
         result.port == 1234
+        result.maxPort == 1234
     }
 
     @Unroll

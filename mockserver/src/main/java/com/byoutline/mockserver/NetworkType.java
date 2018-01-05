@@ -1,7 +1,9 @@
 package com.byoutline.mockserver;
 
 /**
- * @author Sebastian Kacprzak <sebastian.kacprzak at byoutline.com> on 14.04.14.
+ * Contains expected delays for common network types.
+ *
+ * @author Sebastian Kacprzak |sebastian.kacprzak at byoutline.com| on 14.04.14.
  */
 public enum NetworkType {
     /**
