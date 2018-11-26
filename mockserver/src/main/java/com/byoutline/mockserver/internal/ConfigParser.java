@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+
 /**
  * Parses {@link HttpMockServer} config file and
  * responses from assets.
@@ -99,7 +100,7 @@ public class ConfigParser {
         if (requestJsonObject.has(ConfigKeys.RESPONSE_FILE)) {
             String responseFileName = requestJsonObject.getString(ConfigKeys.RESPONSE_FILE);
             String responseContentString = readPartialConfigFile(responseFileName, fileReader);
-            message = toJsonString(responseContentString);
+            message = getParsedMessage(responseContentString, responseFileName);
         } else {
             message = parseConfigResponse(requestJsonObject);
         }
@@ -195,13 +196,16 @@ public class ConfigParser {
         return json.has(key) ? json.getString(key) : defaultValue;
     }
 
-
-    private static String toJsonString(String responseString) throws JSONException {
-        try {
-            return new JSONObject(responseString).toString();
-        } catch (JSONException ex) {
-            return new JSONArray(responseString).toString();
+    private static String getParsedMessage(String respContentString, String fileName) throws JSONException {
+        if (fileName.endsWith(ConfigKeys.JSON_EXTENSION)) {
+            try {
+                return new JSONObject(respContentString).toString();
+            } catch (JSONException ex) {
+                return new JSONArray(respContentString).toString();
+            }
         }
+        //remain types return as string without validation
+        else return respContentString;
     }
 
     private static Map<String, String> getStringMapFromFileAndObject(JSONObject requestJsonObject, ConfigReader configReader, String fileConfigKey, String objectConfigKey) throws IOException {
