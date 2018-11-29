@@ -50,7 +50,7 @@ public class ResponseHandler {
 
     private void setResponseFields(Response resp, ResponseParams rp) {
         final long time = System.currentTimeMillis();
-        String contentType = getContentType(rp.isStaticFile(), rp.getMessage());
+        String contentType = getContentType(rp);
         resp.setContentType(contentType);
         resp.setValue("Server", "Mock");
         resp.setDate("Date", time);
@@ -93,8 +93,9 @@ public class ResponseHandler {
         }
     }
 
-    private String getContentType(boolean isFile, String responseMsg) {
-        if (isFile) {
+    private String getContentType(ResponseParams rp) {
+        String responseMsg = rp.getMessage();
+        if (rp.isStaticFile()) {
             if (responseMsg.endsWith(".png")) {
                 return "image/png";
             } else if (responseMsg.endsWith(".ogg")) {
