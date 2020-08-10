@@ -32,7 +32,14 @@ public class SampleReader implements ConfigReader  {
     @Override
     public InputStream getStaticFile(String relativePath) throws IOException {
         //needed when use static data like images
-        return null;
+        File file = new File("sample/src/main/resources/static");
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return inputStream;
     }
 
     @Override
@@ -42,10 +49,8 @@ public class SampleReader implements ConfigReader  {
     the search file in specified path requires checking whether 
     the current location is a directory or  the target file
     */
-    
         try {
-            boolean directory = new File(relativePath).isFile();
-            return !directory;
+            return new File(relativePath).isDirectory();
         } catch (Exception e) {
             return false;
         }

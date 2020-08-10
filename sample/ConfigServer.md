@@ -66,6 +66,8 @@ We have:  sample.jar and mock resources in created mock resources folder.
 In our case:
 ```
 MyMockFolder/
+        * static/
+            * donkey.jpg
         * books/
             * books.json
         * config.json
@@ -105,7 +107,8 @@ Simply clever!
 Open your web browser and enter
 ```localhost:{port declared in config.json}/{path declared in config.json}```
 
-in our simple case it looks like ```http://localhost:8099/books```
+in our simple case it looks like ```http://localhost:8099/books``` or
+```http://localhost:8099/donkey.jpg```(photo by Sebastian Kacprzak CC BY-SA 4.0)
 
 On Linux you can also check result in other terminal by 
 curl, in our case ```curl http://localhost:8099/books```

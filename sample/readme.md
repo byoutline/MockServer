@@ -1,23 +1,37 @@
 MockServer Sample
 =================
 
-Simple example of using MockSerwer as a real Http serwer running 
+Simple example of using MockSerwer as a real Http serwer running locally
 on java virtual machine. 
 
 ## Preparation
 
-All we need  is config.json file wchich contains configuration of own
-http server and response files. Simple example shown below.
+All we need  is:
+ * config.json file that contains configuration of own http server
+ * response files - json,xml or another text files
+ * static resources - images, sounds etc.
 
-### example config.json file
+Simple example shown below.
+
+### Example config.json file
 ```json
 {
   "port": 8099,
   "requests": [
     {
-      "method": "GET",
+      "method": "POST",
       "path": "/books",
       "response file": "books/books.json"
+    },
+    {
+      "method": "GET",
+      "path": "/testxml",
+      "response file": "simple.xml"
+    },
+    {
+      "method": "GET",
+      "path": "/something",
+      "response file": "samplefile"
     }
   ]
 }
@@ -26,14 +40,14 @@ http server and response files. Simple example shown below.
  * make sure that the port is not in use by another process (and if it is,
  try to change the port or kill the process that uses this port if it is 
  negligible)
- * response file field requires a relative path to resources
+ * response file field requires a relative path to resource
  * path field define how to refer to resource 
  (in this case by ```http://localhost:8099/books```)
  * If you do not specify a response file server by default tries to refer to index.html
- * by default response file should be a json file, in another case you should use
-    methods for getting static data
- 
-### example response file
+ * preferred response should be a json or xml file (json is validated, if not valid server will crash)
+ * another response files will be send as text
+ * static resources should be placed in directory named "static"
+### Example response files
 ```json
 [{
   "title": "book1",

@@ -5,6 +5,16 @@
       "method": "GET",
       "path": "/books",
       "response file": "books/books.json"
+    },
+    {
+      "method": "POST",
+      "path": "/testxml",
+      "response file": "simple.xml"
+    },
+    {
+      "method": "GET",
+      "path": "/something",
+      "response file": "samplefile"
     }
   ]
 }
